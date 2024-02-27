@@ -1,9 +1,11 @@
 import { createContext, useReducer, useEffect, useMemo, useContext } from 'react'
 import axios from 'axios';
 
+axios.defaults.baseURL = 'https://pklaos88.online';
+
 const apiURL = process.env.API_URL ? process.env.API_URL : "";
 
-const AuthContext = createContext()
+const AuthContext = createContext();
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -16,17 +18,16 @@ const authReducer = (state, action) => {
     default:
       return state
   }
-  
 }
 
-export const AuthProvider = ({children}) => {
-  const [state, dispatch] = useReducer(authReducer, {auth: null})
+export const AuthProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(authReducer, { auth: null })
 
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem('auth'))
 
     if (auth) {
-      dispatch({ type: 'LOGIN', payload: auth }) 
+      dispatch({ type: 'LOGIN', payload: auth })
     }
   }, []);
 
@@ -38,8 +39,10 @@ export const AuthProvider = ({children}) => {
 
   const login = async (username, password) => {
     try {
-      const response = await axios.post(apiURL+'/api/auth/user/signin', { username, password });
-      dispatch({type: 'LOGIN', payload: response.data} );
+      const response = await axios.post(apiURL + '/api/auth/user/signin', { username, password });
+      dispatch({ type: 'LOGIN', payload: { ...response.data, username } });
+
+      //dispatch({ type: 'LOGIN', payload: response.data });
     } catch (error) {
       console.error(error);
     }
@@ -47,33 +50,30 @@ export const AuthProvider = ({children}) => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.post(apiURL+'/api/auth/user/refresh', { refreshToken: state.auth.refreshToken, accessToken: state.auth.accessToken});
-      dispatch({type: 'REFRESH', payload: response.data})
+      const response = await axios.post(apiURL + '/api/auth/user/refresh', { refreshToken: state.auth.refreshToken, accessToken: state.auth.accessToken });
+      dispatch({ type: 'REFRESH', payload: response.data })
     } catch (error) {
       console.error(error);
-      // setUser(null);
     }
   };
 
   const logout = () => {
-    dispatch({type: 'LOGOUT'})
+    dispatch({ type: 'LOGOUT' })
   };
 
   const isAuthenticated = () => {
     return state.auth !== null;
   };
 
-
   const value = useMemo(
     () => ({
-      login, refreshToken, logout, isAuthenticated
+      login, refreshToken, logout, isAuthenticated, auth: state.auth // Include auth in the value
     }), [state]
   );
 
-
   return (
     <AuthContext.Provider value={value}>
-      { children }
+      {children}
     </AuthContext.Provider>
   )
 }
