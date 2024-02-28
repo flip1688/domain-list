@@ -1,29 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const Login = ({ location }) => {
+const Login = () => {
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { login,isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
-  useEffect(() => {
-    if (isAuthenticated()) {
-      navigate("/home");
-    }
-  }, [isAuthenticated, navigate]);
+  if (isAuthenticated()) {
+    navigate("/home");
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       await login(formData.username, formData.password);
+      // สำเร็จแล้วไปที่หน้า Home
       navigate("/home");
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการลงชื่อเข้าใช้:", error);
+      // หากเกิดข้อผิดพลาด แสดง Alert และไม่ทำการเปลี่ยนเส้นทาง
+      alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
     }
   };
 
