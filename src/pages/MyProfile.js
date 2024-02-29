@@ -1,20 +1,19 @@
 import Header from "./Header";
-import { useAuth } from "../context/AuthContext";
 
 const MyProfile = () => {
-  const { user } = useAuth();
+  const user = JSON.parse(localStorage.getItem("user"));
 
   return (
     <>
       <Header />
       <div className="container" style={{textAlign:"-webkit-center"}}>
         {user && (
-          <div class="card mt-2" style={{ width: "1024px"}}>
-            <div class="card-header bg-secondary">
+          <div className="card mt-2" style={{ width: "1024px"}}>
+            <div className="card-header bg-secondary">
               <strong className="text-white">My Profile</strong>
             </div>
-            <div class="card-body p-0 overflow-auto">
-              <table class="table table-striped my-0">
+            <div className="card-body p-0 overflow-auto">
+              <table className="table table-striped my-0">
                 <thead>
                   <tr>
                     <th>Type</th>

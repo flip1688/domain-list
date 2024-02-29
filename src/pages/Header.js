@@ -1,20 +1,29 @@
-import { Link, useLocation } from "react-router-dom";
+import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 const Header = () => {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const username = user ? user.username : null;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <div>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light flex-wrap flex-lg-nowrap">
-        <div class="container-fluid">
-          <a class="navbar-brand align-items-center" href="/">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light flex-wrap flex-lg-nowrap">
+        <div className="container-fluid">
+          <a className="navbar-brand align-items-center" href="/">
             Domain-List
           </a>
           <button
-            class="navbar-toggler border border-0"
+            className="navbar-toggler border border-0"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
@@ -22,13 +31,13 @@ const Header = () => {
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
-            <span class="navbar-toggler-icon"></span>
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse " id="navbarNav">
-            <ul class="navbar-nav flex-row flex-wrap ms-lg-auto w-auto">
-              <li class="nav-item col-6 col-lg-auto ">
+          <div className="collapse navbar-collapse " id="navbarNav">
+            <ul className="navbar-nav flex-row flex-wrap ms-lg-auto w-auto">
+              <li className="nav-item col-6 col-lg-auto ">
                 <Link
-                  class={`nav-link border rounded m-1 px-2 ${
+                  className={`nav-link border rounded m-1 px-2 ${
                     location.pathname === "/home"
                       ? "bg-secondary text-white active"
                       : ""
@@ -39,9 +48,9 @@ const Header = () => {
                   Dashboard
                 </Link>
               </li>
-              <li class="nav-item col-6 col-lg-auto ">
+              <li className="nav-item col-6 col-lg-auto ">
                 <Link
-                  class={`nav-link border rounded m-1 px-2 ${
+                  className={`nav-link border rounded m-1 px-2 ${
                     location.pathname === "/user"
                       ? "bg-secondary text-white active"
                       : ""
@@ -52,9 +61,9 @@ const Header = () => {
                   Users
                 </Link>
               </li>
-              <li class="nav-item col-6 col-lg-auto ">
+              <li className="nav-item col-6 col-lg-auto ">
                 <Link
-                  class={`nav-link border rounded m-1 px-2 ${
+                  className={`nav-link border rounded m-1 px-2 ${
                     location.pathname === "/report"
                       ? "bg-secondary text-white active"
                       : ""
@@ -66,12 +75,12 @@ const Header = () => {
                 </Link>
               </li>
             </ul>
-            <hr class="d-lg-none text-dark-25 bg-dark" />
-            <ul class="navbar-nav flex-row flex-wrap ms-lg-auto w-auto ">
-              <li class="nav-item col-6 col-lg-auto">
-                <div class="btn-group dropstart">
+            <hr className="d-lg-none text-dark-25 bg-dark" />
+            <ul className="navbar-nav flex-row flex-wrap ms-lg-auto w-auto ">
+              <li className="nav-item col-6 col-lg-auto">
+                <div className="btn-group dropstart">
                   <button
-                    class="btn btn-sm btn-light dropdown-toggle"
+                    className="btn btn-sm btn-light dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton1"
                     data-bs-toggle="dropdown"
@@ -89,35 +98,35 @@ const Header = () => {
                         cy="9"
                         r="3"
                         stroke="#1C274C"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                       />
                       <circle
                         cx="12"
                         cy="12"
                         r="10"
                         stroke="#1C274C"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                       />
                       <path
                         d="M17.9691 20C17.81 17.1085 16.9247 15 11.9999 15C7.07521 15 6.18991 17.1085 6.03076 20"
                         stroke="#1C274C"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
                       />
                     </svg>
                     <span className="mx-1">{username}</span>
                   </button>
                   <ul
-                    class="dropdown-menu"
+                    className="dropdown-menu"
                     aria-labelledby="dropdownMenuButton1"
                   >
                     <li>
-                      <Link to="/me" class="dropdown-item">
+                      <Link to="/me" className="dropdown-item">
                         My Profile
                       </Link>
                     </li>
                     <li>
-                      <Link to="/logout" class="dropdown-item">
+                      <Link to="/logout" className="dropdown-item">
                         Logout
                       </Link>
                     </li>

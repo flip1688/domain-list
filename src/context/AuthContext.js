@@ -12,6 +12,25 @@ axios.defaults.baseURL = "https://pklaos88.online";
 
 const apiURL = process.env.API_URL ? process.env.API_URL : "";
 
+axios.interceptors.response.use(undefined, (err) => {
+  const { config, message } = err;
+  if (!config || !config.retry) {
+    return Promise.reject(err);
+  }
+  // retry while Network timeout or Network Error
+  if (!(message.includes("timeout") || message.includes("Network Error"))) {
+    return Promise.reject(err);
+  }
+  config.retry -= 1;
+  const delayRetryRequest = new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("retry the request", config.url);
+      resolve();
+    }, config.retryDelay || 1000);
+  });
+  return delayRetryRequest.then(() => axios(config));
+});
+
 const AuthContext = createContext();
 
 const authReducer = (state, action) => {
@@ -34,20 +53,22 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
-    const user = (localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"));
 
     if (auth) {
       dispatch({ type: "LOGIN", payload: auth });
     }
 
     if (user) {
-      dispatch({ type: "USER", payload: auth });
+      dispatch({ type: "USER", payload: user });
     }
   }, []);
 
   useEffect(() => {
     if (state.auth) {
       localStorage.setItem("auth", JSON.stringify(state.auth));
+    }
+    if (state.user) {
       localStorage.setItem("user", JSON.stringify(state.user));
     }
   }, [state.auth, state.user]);
@@ -65,6 +86,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("rtoken", rtoken);
 
       const userInfoResponse = await axios.get(apiURL + "/api/user/me", {
+        retry: 3,
+        retryDelay: 3000,
         headers: {
           Authorization: `Bearer ${response.data.accessToken}`,
         },
@@ -79,6 +102,8 @@ export const AuthProvider = ({ children }) => {
         type: "USER",
         payload: userInfoResponse.data,
       });
+
+      return response;
     } catch (error) {
       console.error(error);
     }
@@ -87,28 +112,35 @@ export const AuthProvider = ({ children }) => {
   const fetchUsers = useCallback(async () => {
     try {
       const response = await axios.get(apiURL + "/api/user", {
+        retry: 3,
+        retryDelay: 3000,
         headers: {
           Authorization: `Bearer ${state.auth.accessToken}`,
         },
       });
-      console.log(response);
-  
-      return response.data.data;
+
+      if (response.status === 200) {
+        return response.data.data;
+      } else {
+        return false;
+      }
     } catch (error) {
-      console.error(error);
-      return [];
+      return false;
     }
-  }, [state.auth]);  
+  }, [state.auth]);
 
   const refreshToken = useCallback(async () => {
     try {
-      const response = await axios.post(apiURL + "/api/auth/user/refresh", {
-        refreshToken: state.auth.refreshToken,
-        accessToken: state.auth.accessToken,
-      });
+      const response = await axios.post(
+        apiURL + "/api/auth/user/refresh",
+        {
+          refreshToken: state.auth.refreshToken,
+          accessToken: state.auth.accessToken,
+        }
+      );
       dispatch({ type: "REFRESH", payload: response.data });
     } catch (error) {
-      console.error(error);
+      return false;
     }
   }, [state.auth]);
 
@@ -127,7 +159,7 @@ export const AuthProvider = ({ children }) => {
       logout,
       isAuthenticated,
       fetchUsers,
-      user: state.user, 
+      user: state.user,
     }),
     [state.user, login, refreshToken, logout, isAuthenticated, fetchUsers]
   );
