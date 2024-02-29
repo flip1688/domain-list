@@ -1,31 +1,19 @@
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, isAuthenticated, refreshToken } = useAuth();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (isAuthenticated()) {
-        if(!refreshToken()){
-          navigate("/home");
-        }
-      }
-    }, 0);
-  }, [isAuthenticated, navigate]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await login(formData.username, formData.password);
-
       if (response.status === 200) {
         navigate("/home");
       } else {

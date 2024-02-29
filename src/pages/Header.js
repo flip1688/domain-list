@@ -1,19 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useEffect } from "react";
 
 const Header = () => {
   const location = useLocation();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, refreshToken } = useAuth();
   const username = user ? user.username : null;
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate]);
+    const delay = 1000; 
+    const checkAuth = async () => {
+      if (!isAuthenticated()) {
+        const isRefresh = await refreshToken();
+        if (!isRefresh) {
+          navigate("/logout");
+        }
+      }
+    };
+    const timerId = setTimeout(checkAuth, delay);
+    return () => clearTimeout(timerId);
+  }, [isAuthenticated, navigate, refreshToken]);
 
   return (
     <div>

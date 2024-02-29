@@ -5,8 +5,6 @@ import { useAuth } from "../context/AuthContext";
 const Logout = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  localStorage.removeItem('token');
-  localStorage.removeItem('rtoken');
   localStorage.removeItem('auth');
   localStorage.removeItem('user');
 
