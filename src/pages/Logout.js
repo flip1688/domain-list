@@ -1,25 +1,23 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import {logout} from '../features/auth/authSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Logout = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
-  localStorage.removeItem('auth');
-  localStorage.removeItem('user');
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleLogout = async () => {
-      await logout();
+      dispatch(logout())
     };
 
     handleLogout();
     navigate("/");
 
-  }, [logout, navigate]);
+  }, []);
 
-  return null; 
+  return  null;
 };
 
 export default Logout;

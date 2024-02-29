@@ -1,26 +1,27 @@
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { userRefreshToken } from '../features/auth/authActions'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Header = () => {
   const location = useLocation();
-  const { user, isAuthenticated, refreshToken } = useAuth();
-  const username = user ? user.username : null;
+  const { loading, userAuth, userInfo, error, success } = useSelector(
+    (state) => state.auth
+  )
+  const dispatch = useDispatch()
+  const username = userInfo ? userInfo.username : null;
   const navigate = useNavigate();
 
   useEffect(() => {
-    const delay = 1000; 
-    const checkAuth = async () => {
-      if (!isAuthenticated()) {
-        const isRefresh = await refreshToken();
-        if (!isRefresh) {
-          navigate("/logout");
-        }
-      }
-    };
-    const timerId = setTimeout(checkAuth, delay);
-    return () => clearTimeout(timerId);
-  }, [isAuthenticated, navigate, refreshToken]);
+
+    if (userAuth) {
+      dispatch(userRefreshToken(userAuth));
+
+    } else {
+      navigate("/");
+    }
+
+  }, []);
 
   return (
     <div>
@@ -44,11 +45,10 @@ const Header = () => {
             <ul className="navbar-nav flex-row flex-wrap ms-lg-auto w-auto">
               <li className="nav-item col-6 col-lg-auto ">
                 <Link
-                  className={`nav-link border rounded m-1 px-2 ${
-                    location.pathname === "/home"
+                  className={`nav-link border rounded m-1 px-2 ${location.pathname === "/home"
                       ? "bg-secondary text-white active"
                       : ""
-                  }`}
+                    }`}
                   aria-current="page"
                   to="/home"
                 >
@@ -57,11 +57,10 @@ const Header = () => {
               </li>
               <li className="nav-item col-6 col-lg-auto ">
                 <Link
-                  className={`nav-link border rounded m-1 px-2 ${
-                    location.pathname === "/user"
+                  className={`nav-link border rounded m-1 px-2 ${location.pathname === "/user"
                       ? "bg-secondary text-white active"
                       : ""
-                  }`}
+                    }`}
                   aria-current="page"
                   to="/user"
                 >
@@ -70,11 +69,10 @@ const Header = () => {
               </li>
               <li className="nav-item col-6 col-lg-auto ">
                 <Link
-                  className={`nav-link border rounded m-1 px-2 ${
-                    location.pathname === "/report"
+                  className={`nav-link border rounded m-1 px-2 ${location.pathname === "/report"
                       ? "bg-secondary text-white active"
                       : ""
-                  }`}
+                    }`}
                   aria-current="page"
                   to="/report"
                 >

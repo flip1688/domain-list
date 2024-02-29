@@ -79,14 +79,14 @@ export const AuthProvider = ({ children }) => {
 
   }, []);
 
-  useEffect(() => {
-    if (state.auth) {
-      localStorage.setItem("auth", JSON.stringify(state.auth));
-    }
-    if (state.user) {
-      localStorage.setItem("user", JSON.stringify(state.user));
-    }
-  }, [state.auth, state.user]);
+  // useEffect(() => {
+  //   if (state.auth) {
+  //     localStorage.setItem("auth", JSON.stringify(state.auth));
+  //   }
+  //   if (state.user) {
+  //     localStorage.setItem("user", JSON.stringify(state.user));
+  //   }
+  // }, [state.auth, state.user]);
 
   const getSelf = useCallback(async (accessToken, rfToken) => {
     console.log("do get me");

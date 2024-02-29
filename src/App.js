@@ -11,7 +11,6 @@ import Users from "./pages/Users";
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
@@ -20,7 +19,6 @@ function App() {
           <Route path="/report" element={<Home />} />
           <Route path="/me" element={<MyProfile />} />
         </Routes>
-      </AuthProvider>
     </BrowserRouter>
   );
 }

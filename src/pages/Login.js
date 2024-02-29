@@ -1,30 +1,35 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-
+import { useState, useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import {userRefreshToken, userLogin} from '../features/auth/authActions'
+import { useDispatch, useSelector } from 'react-redux'
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { loading, userAuth, error, success } = useSelector(
+    (state) => state.auth
+  )
+  const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     if (isAuthenticated()) {
-  //       if(!refreshToken()){
-  //         navigate("/home");
-  //       }
-  //     }
-  //   }, 0);
-  // }, [isAuthenticated, navigate]);
+  useEffect(() => {
+    setTimeout(() => {
+      if (userAuth) {
+        console.log("userAuth:", userAuth);
+        dispatch(userRefreshToken(userAuth));
+        navigate("/home");
+      }
+      // navigate("/home");
+    }, 0);
+  }, [navigate, dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await login(formData.username, formData.password);
-      if (response.status === 200) {
+      const response = await dispatch(userLogin(formData));
+      console.log("dispatch login:", response);
+      if (response.payload && response.payload.auth) {
         navigate("/home");
       } else {
         alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
