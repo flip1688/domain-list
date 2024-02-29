@@ -10,6 +10,16 @@ const Login = () => {
     password: "",
   });
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if (isAuthenticated()) {
+  //       if(!refreshToken()){
+  //         navigate("/home");
+  //       }
+  //     }
+  //   }, 0);
+  // }, [isAuthenticated, navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
