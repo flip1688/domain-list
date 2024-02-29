@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, refreshToken } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -13,7 +13,9 @@ const Login = () => {
   useEffect(() => {
     setTimeout(() => {
       if (isAuthenticated()) {
-        navigate("/home");
+        if(!refreshToken()){
+          navigate("/home");
+        }
       }
     }, 0);
   }, [isAuthenticated, navigate]);

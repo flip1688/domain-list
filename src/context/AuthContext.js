@@ -21,6 +21,7 @@ axios.interceptors.response.use(undefined, (err) => {
   if (!(message.includes("timeout") || message.includes("Network Error"))) {
     return Promise.reject(err);
   }
+
   config.retry -= 1;
   const delayRetryRequest = new Promise((resolve) => {
     setTimeout(() => {
@@ -80,11 +81,6 @@ export const AuthProvider = ({ children }) => {
         password,
       });
 
-      const token = response.data.accessToken;
-      const rtoken = response.data.refreshToken;
-      localStorage.setItem("token", token);
-      localStorage.setItem("rtoken", rtoken);
-
       const userInfoResponse = await axios.get(apiURL + "/api/user/me", {
         retry: 3,
         retryDelay: 3000,
@@ -109,6 +105,20 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const refreshToken = useCallback(async () => {
+    try {
+      const response = await axios.post(apiURL + "/api/auth/user/refresh", {
+        retry: 3,
+        retryDelay: 3000,
+        refreshToken: state.auth.refreshToken,
+        accessToken: state.auth.accessToken,
+      });
+      dispatch({ type: "REFRESH", payload: response.data });
+    } catch (error) {
+      return false;
+    }
+  }, [state.auth]);
+
   const fetchUsers = useCallback(async () => {
     try {
       const response = await axios.get(apiURL + "/api/user", {
@@ -129,20 +139,46 @@ export const AuthProvider = ({ children }) => {
     }
   }, [state.auth]);
 
-  const refreshToken = useCallback(async () => {
-    try {
-      const response = await axios.post(
-        apiURL + "/api/auth/user/refresh",
-        {
-          refreshToken: state.auth.refreshToken,
-          accessToken: state.auth.accessToken,
+  const CreateNewUser = useCallback(
+    async (username, password, name, role) => {
+      try {
+        const response = await axios.post(apiURL + "/api/user", {
+          username,
+          password,
+          name,
+          role,
+          headers: {
+            Authorization: `Bearer ${state.auth.accessToken}`,
+          },
+        });
+
+        if (response.status === 200) {
+          return response.data.data;
+        } else {
+          if (refreshToken()) {
+            const response = await axios.post(apiURL + "/api/user", {
+              username,
+              password,
+              name,
+              role,
+              headers: {
+                Authorization: `Bearer ${state.auth.accessToken}`,
+              },
+            });
+
+            return response.data.data;
+          } else {
+            console.log(response);
+            return false;
+          }
         }
-      );
-      dispatch({ type: "REFRESH", payload: response.data });
-    } catch (error) {
-      return false;
-    }
-  }, [state.auth]);
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
+    },
+    [state.auth]
+  );
 
   const logout = useCallback(() => {
     dispatch({ type: "LOGOUT" });
@@ -159,9 +195,18 @@ export const AuthProvider = ({ children }) => {
       logout,
       isAuthenticated,
       fetchUsers,
+      CreateNewUser,
       user: state.user,
     }),
-    [state.user, login, refreshToken, logout, isAuthenticated, fetchUsers]
+    [
+      state.user,
+      login,
+      refreshToken,
+      logout,
+      isAuthenticated,
+      fetchUsers,
+      CreateNewUser,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
