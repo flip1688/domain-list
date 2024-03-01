@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { userLogin, userRefreshToken } from './authActions';
 
-
-const userAuth = JSON.parse(localStorage.getItem("auth")) ? JSON.parse(localStorage.getItem("auth")): null;
+const authFromLocalStorage = localStorage.getItem("auth");
+const userAuth = authFromLocalStorage !== "undefined" ? JSON.parse(authFromLocalStorage) : null;
 
 const initialState = {
   userInfo: null,

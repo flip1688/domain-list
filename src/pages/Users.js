@@ -1,23 +1,25 @@
 import Header from "./Header";
 import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-//import axios from "axios";
+import { useSelector } from "react-redux";
+
+import {
+  fetchUsers,
+  CreateNewUser,
+  UpdateUserStatus,
+  ResetUserPass,
+} from "../features/api/userAPI";
+import { Navigate } from "react-router";
 
 const Users = () => {
-  const {
-    fetchUsers,
-    isAuthenticated,
-    CreateNewUser,
-    UpdateUserStatus,
-    ResetUserPass,
-  } = useAuth();
+  const { userAuth } = useSelector((state) => state.auth);
+
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [showModal3, setShowModal3] = useState(false);
   const [currentUser, setCurrentUserId] = useState(null);
   const [currentUserName, setCurrentUserName] = useState(null);
-
   const [users, setUsers] = useState([]);
+  const prevUsers = users;
   //const auth = JSON.parse(localStorage.getItem("auth"));
   const [formData, setFormData] = useState({
     username: "",
@@ -68,12 +70,13 @@ const Users = () => {
         formData.username,
         formData.password,
         formData.name,
-        formData.role
+        formData.role,
+        userAuth
       );
 
       if (response.status === 200) {
         const getUsers = async () => {
-          const usersData = await fetchUsers();
+          const usersData = await fetchUsers(userAuth);
           setUsers(usersData);
         };
         getUsers();
@@ -89,14 +92,15 @@ const Users = () => {
     e.preventDefault();
 
     try {
-      const response = await UpdateUserStatus(currentUser, formData2.status);
+      const response = await UpdateUserStatus(
+        currentUser,
+        formData2.status,
+        userAuth
+      );
 
       if (response.status === 200) {
-        const getUsers = async () => {
-          const usersData = await fetchUsers();
-          setUsers(usersData);
-        };
-        getUsers();
+        setUsers(await fetchUsers(userAuth));
+        closeModal2();
       } else {
         alert("Fail to Change");
       }
@@ -109,14 +113,15 @@ const Users = () => {
     e.preventDefault();
 
     try {
-      const response = await ResetUserPass(currentUser, formData3.password);
+      const response = await ResetUserPass(
+        currentUser,
+        formData3.password,
+        userAuth
+      );
 
       if (response.status === 200) {
-        const getUsers = async () => {
-          const usersData = await fetchUsers();
-          setUsers(usersData);
-        };
-        getUsers();
+        setUsers(await fetchUsers(userAuth));
+        closeModal3();
       } else {
         alert("Fail to Change");
       }
@@ -125,16 +130,22 @@ const Users = () => {
     }
   };
 
-  useEffect(() => {
-    if (isAuthenticated()) {
-      const getUsers = async () => {
-        const usersData = await fetchUsers();
-        setUsers(usersData);
-      };
-      getUsers();
-    }
-  }, [fetchUsers, isAuthenticated]);
+  // useEffect(() => {
+  //   const getUsers = async () => {
+  //     const usersData = await fetchUsers(userAuth);
+  //     setUsers(usersData);
+  //   };
+  //   getUsers();
+  // }, [fetchUsers]);
 
+  useEffect(() => {
+      const fetchData = async () => {
+        const users = await fetchUsers(userAuth);
+        setUsers(users);
+      };
+      fetchData();
+  }, [fetchUsers]);
+  
   useEffect(() => {
     if (showModal) {
       setTimeout(() => {
@@ -332,7 +343,8 @@ const Users = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Change Status : <strong className="h5">{currentUserName}</strong>
+                Change Status :{" "}
+                <strong className="h5">{currentUserName}</strong>
               </h5>
               <button
                 type="button"
@@ -392,7 +404,8 @@ const Users = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Change User Password : <strong className="h5">{currentUserName}</strong>
+                Change User Password :{" "}
+                <strong className="h5">{currentUserName}</strong>
               </h5>
               <button
                 type="button"

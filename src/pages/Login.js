@@ -1,27 +1,24 @@
 import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import {userRefreshToken, userLogin} from '../features/auth/authActions'
-import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from "react-router-dom";
+import { userRefreshToken, userLogin } from "../features/auth/authActions";
+import { useDispatch, useSelector } from "react-redux";
 const Login = () => {
   const navigate = useNavigate();
   const { loading, userAuth, error, success } = useSelector(
     (state) => state.auth
-  )
-  const dispatch = useDispatch()
+  );
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      if (userAuth) {
-        console.log("userAuth:", userAuth);
-        dispatch(userRefreshToken(userAuth));
-        navigate("/home");
-      }
-      // navigate("/home");
-    }, 0);
+    if (userAuth) {
+      console.log("userAuth:", userAuth);
+      dispatch(userRefreshToken(userAuth));
+      navigate("/home");
+    }
   }, [navigate, dispatch]);
 
   const handleSubmit = async (e) => {

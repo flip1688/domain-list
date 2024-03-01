@@ -1,9 +1,13 @@
 import Header from "./Header";
 import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useSelector } from "react-redux";
+import {ChangeOwnName , ChangeOwnPass} from "../features/api/userAPI";
 
 const MyProfile = () => {
-  const { user, ChangeOwnPass, ChangeOwnName } = useAuth();
+  const { userAuth, userInfo } = useSelector(
+    (state) => state.auth
+  );
+
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [formData, setFormData] = useState({
@@ -14,7 +18,7 @@ const MyProfile = () => {
     name: "",
   });
 
-  const [users, setUsers] = useState([]);
+  const [user, setUsers] = useState(userInfo);
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
   const openModal2 = () => setShowModal2(true);
@@ -22,18 +26,19 @@ const MyProfile = () => {
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await ChangeOwnPass(
         formData.password,
-        formData.newPassword
+        formData.newPassword,
+        userAuth
       );
 
       if (response.status === 200) {
-        setUsers(users);
+        setUsers(false);
+        setUsers(userInfo);
       } else {
         alert("Fail to Change");
       }
@@ -46,12 +51,9 @@ const MyProfile = () => {
     e.preventDefault();
 
     try {
-      const response = await ChangeOwnName(
-        formData.name
-      );
-
+      const response = await ChangeOwnName(formData2.name,userAuth);
       if (response.status === 200) {
-        setUsers(users);
+        setUsers(response.data)
       } else {
         alert("Fail to Change");
       }
@@ -76,7 +78,9 @@ const MyProfile = () => {
     } else {
       setShow2(false);
     }
-  }, [showModal,showModal2]);
+  }, [showModal, showModal2]);
+
+  
 
   return (
     <>
@@ -107,7 +111,9 @@ const MyProfile = () => {
                   <tr>
                     <td>name</td>
                     <td>
-                      <div className="border rounded p-2 bg-white mb-2"><strong>{user.name}</strong></div>
+                      <div className="border rounded p-2 bg-white mb-2">
+                        <strong>{user.name}</strong>
+                      </div>
                       <button
                         className="btn btn-primary w-100"
                         id="basic-url"

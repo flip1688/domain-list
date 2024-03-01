@@ -7,6 +7,8 @@ import {
   useCallback,
 } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
+
 
 axios.defaults.baseURL = "https://pklaos88.online";
 
@@ -39,44 +41,45 @@ export const AuthProvider = ({ children }) => {
     }
     // retry while Network timeout or Network Error
     // console.log(message)
-    if (!(message.includes("timeout") || message.includes("Network Error") || err.response.status === 401)) {
+    if (
+      !(
+        message.includes("timeout") ||
+        message.includes("Network Error") ||
+        err.response.status === 401
+      )
+    ) {
       console.log("error ", err);
       return Promise.reject(err);
     }
-  
+
     config.retry -= 1;
     const delayRetryRequest = new Promise((resolve) => {
       refreshToken();
       setTimeout(() => {
-        
-        config.headers.Authorization = `Bearer ${state.auth.accessToken}`
+        config.headers.Authorization = `Bearer ${state.auth.accessToken}`;
         console.log("retry the request", config.url);
         resolve();
       }, config.retryDelay || 1000);
     });
     return delayRetryRequest.then(() => axios(config));
-  }
-
-  
+  };
 
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
     // const user = JSON.parse(localStorage.getItem("user"));
 
     if (auth) {
-     
-     try {
-      console.log("auth", auth);
-     
-      // dispatch({type: "LOGIN", payload: auth});
-      refreshToken(auth.accessToken, auth.refreshToken);
-      // getSelf(auth.accessToken, auth.refreshToken);
-     } catch (error){
-      console.log("err refresh:",error);
-      // refreshToken(auth.accessToken, auth.refreshToken);
-     }
-    }
+      try {
+        console.log("auth", auth);
 
+        // dispatch({type: "LOGIN", payload: auth});
+        refreshToken(auth.accessToken, auth.refreshToken);
+        // getSelf(auth.accessToken, auth.refreshToken);
+      } catch (error) {
+        console.log("err refresh:", error);
+        // refreshToken(auth.accessToken, auth.refreshToken);
+      }
+    }
   }, []);
 
   // useEffect(() => {
@@ -88,26 +91,29 @@ export const AuthProvider = ({ children }) => {
   //   }
   // }, [state.auth, state.user]);
 
-  const getSelf = useCallback(async (accessToken, rfToken) => {
-    console.log("do get me");
-    try {
-      const response = await axios.get(apiURL+'/api/user/me' ,{
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`,
-        },
-        rretry: 1,
-      });
-      console.log("get me:". response.data);
-      dispatch({type: "USER" , payload: response.data})
-    } catch (error){
-      console.log(error)
-      // if (error.response.status === 401) {
-      //   console.log("do refresh");
-      //   refreshToken(accessToken, rfToken);
-      // }
-    }
-  }, [state.auth])
+  const getSelf = useCallback(
+    async (accessToken, rfToken) => {
+      console.log("do get me");
+      try {
+        const response = await axios.get(apiURL + "/api/user/me", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          rretry: 1,
+        });
+        console.log("get me:".response.data);
+        dispatch({ type: "USER", payload: response.data });
+      } catch (error) {
+        console.log(error);
+        // if (error.response.status === 401) {
+        //   console.log("do refresh");
+        //   refreshToken(accessToken, rfToken);
+        // }
+      }
+    },
+    [state.auth]
+  );
   const login = useCallback(async (username, password) => {
     try {
       const response = await axios.post(apiURL + "/api/auth/user/signin", {
@@ -119,32 +125,37 @@ export const AuthProvider = ({ children }) => {
         type: "LOGIN",
         payload: response.data,
       });
-      getSelf(response.data.accessToken, response.data.refreshToken)
+      getSelf(response.data.accessToken, response.data.refreshToken);
       return response;
     } catch (error) {
       console.error(error);
     }
   }, []);
 
-  const refreshToken = useCallback(async (accessToken, refreshToken) => {
-    try {
-      const response = await axios.post(apiURL + "/api/auth/user/refresh", {
-        "refreshToken": refreshToken,
-        "accessToken": accessToken,
-      }, {
-        retry: 3,
-        retryDelay: 3000,
-      });
-      dispatch({ type: "REFRESH", payload: response.data });
-      dispatch({ type: "USER", payload: state.user,
-      });
-    } catch (error) {
-      console.log(error);
-      if (error.response.status === 401)
-      logout();
-      return false;
-    }
-  }, [state.auth,state.user]);
+  const refreshToken = useCallback(
+    async (accessToken, refreshToken) => {
+      try {
+        const response = await axios.post(
+          apiURL + "/api/auth/user/refresh",
+          {
+            refreshToken: refreshToken,
+            accessToken: accessToken,
+          },
+          {
+            retry: 3,
+            retryDelay: 3000,
+          }
+        );
+        dispatch({ type: "REFRESH", payload: response.data });
+        dispatch({ type: "USER", payload: state.user });
+      } catch (error) {
+        console.log(error);
+        if (error.response.status === 401) logout();
+        return false;
+      }
+    },
+    [state.auth, state.user]
+  );
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -165,107 +176,81 @@ export const AuthProvider = ({ children }) => {
       await refreshToken();
       return false;
     }
-  }, [state.auth , refreshToken]);
+  }, [state.auth, refreshToken]);
 
-  const ChangeOwnPass = useCallback(
-    async (password, newPassword,) => {
-      try {
+  const ChangeOwnName = async (name) => {
+    const { userAuth } = useSelector((state) => state.auth);
 
-        await refreshToken();
-        
-        const response = await axios.post(apiURL + "/api/user/me/password", {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userAuth.accessToken}`,
+        },
+      };
+      const response = await axios.post("/api/user/me/name", { name }, config);
+ 
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const ChangeOwnPass = async (password, newPassword) => {
+    const { userAuth } = useSelector((state) => state.auth);
+
+    try {
+      // configure header's Content-Type as JSON
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userAuth.accessToken}`,
+        },
+      };
+
+      const response = await axios.post(
+        "/api/user/me/password",
+        {
           password,
           newPassword,
-          headers: {
-            Authorization: `Bearer ${state.auth.accessToken}`,
-          },
-        });
+        },
+        config
+      );
 
-        if (response.status === 200) {
-          return response.data.data;
-        } else {
-          if (await refreshToken()) {
-            const response = await axios.post(apiURL + "/api/user/me/password", {
-              password,
-              newPassword,
-              headers: {
-                Authorization: `Bearer ${state.auth.accessToken}`,
-              },
-            });
-            return response.data.data;
-          } else {
-            console.log(response);
-            return false;
-          }
-        }
-      } catch (error) {
-        console.log(error);
-        return false;
-      }
-    },
-    [state.auth,refreshToken]
-  );
-
-  const ChangeOwnName = useCallback(
-    async (name) => {
-      try {
-
-        await refreshToken();
-        
-        const response = await axios.post(apiURL + "/api/user/me/name", {
-          name,
-          headers: {
-            Authorization: `Bearer ${state.auth.accessToken}`,
-          },
-        });
-
-        if (response.status === 200) {
-          return response.data.data;
-        } else {
-          if (await refreshToken()) {
-            const response = await axios.post(apiURL + "/api/user/me/name", {
-              name,
-              headers: {
-                Authorization: `Bearer ${state.auth.accessToken}`,
-              },
-            });
-            return response.data.data;
-          } else {
-            console.log(response);
-            return false;
-          }
-        }
-      } catch (error) {
-        console.log(error);
-        return false;
-      }
-    },
-    [state.auth,refreshToken]
-  );
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const UpdateUserStatus = useCallback(
-    async (user_id,status) => {
+    async (user_id, status) => {
       try {
-
         await refreshToken();
-        
-        const response = await axios.post(apiURL + `/api/user/${user_id}/status`, {
-          status,
-          headers: {
-            Authorization: `Bearer ${state.auth.accessToken}`,
-          },
-        });
+
+        const response = await axios.post(
+          apiURL + `/api/user/${user_id}/status`,
+          {
+            status,
+            headers: {
+              Authorization: `Bearer ${state.auth.accessToken}`,
+            },
+          }
+        );
 
         if (response.status === 200) {
           return response.data.data;
         } else {
           if (await refreshToken()) {
-            const response = await axios.post(apiURL + `/api/user/${user_id}/status`, {
-              status,
-              headers: {
-                Authorization: `Bearer ${state.auth.accessToken}`,
-              },
-            });
+            const response = await axios.post(
+              apiURL + `/api/user/${user_id}/status`,
+              {
+                status,
+                headers: {
+                  Authorization: `Bearer ${state.auth.accessToken}`,
+                },
+              }
+            );
             return response.data.data;
           } else {
             console.log(response);
@@ -277,32 +262,37 @@ export const AuthProvider = ({ children }) => {
         return false;
       }
     },
-    [state.auth,refreshToken]
+    [state.auth, refreshToken]
   );
 
   const ResetUserPass = useCallback(
-    async (user_id,new_user_password) => {
+    async (user_id, new_user_password) => {
       try {
-
         await refreshToken();
-        
-        const response = await axios.post(apiURL + `/api/user/${user_id}/password`, {
-          password:new_user_password,
-          headers: {
-            Authorization: `Bearer ${state.auth.accessToken}`,
-          },
-        });
+
+        const response = await axios.post(
+          apiURL + `/api/user/${user_id}/password`,
+          {
+            password: new_user_password,
+            headers: {
+              Authorization: `Bearer ${state.auth.accessToken}`,
+            },
+          }
+        );
 
         if (response.status === 200) {
           return response.data.data;
         } else {
           if (await refreshToken()) {
-            const response = await axios.post(apiURL + `/api/user/${user_id}/password`, {
-              password:new_user_password,
-              headers: {
-                Authorization: `Bearer ${state.auth.accessToken}`,
-              },
-            });
+            const response = await axios.post(
+              apiURL + `/api/user/${user_id}/password`,
+              {
+                password: new_user_password,
+                headers: {
+                  Authorization: `Bearer ${state.auth.accessToken}`,
+                },
+              }
+            );
             return response.data.data;
           } else {
             console.log(response);
@@ -314,15 +304,14 @@ export const AuthProvider = ({ children }) => {
         return false;
       }
     },
-    [state.auth,refreshToken]
+    [state.auth, refreshToken]
   );
 
   const CreateNewUser = useCallback(
     async (username, password, name, role) => {
       try {
-
         await refreshToken();
-        
+
         const response = await axios.post(apiURL + "/api/user", {
           username,
           password,
@@ -358,7 +347,7 @@ export const AuthProvider = ({ children }) => {
         return false;
       }
     },
-    [state.auth,refreshToken]
+    [state.auth, refreshToken]
   );
 
   const logout = useCallback(() => {
@@ -369,7 +358,6 @@ export const AuthProvider = ({ children }) => {
     return state.auth !== null;
   }, [state.auth]);
 
-  
   const value = useMemo(
     () => ({
       login,
