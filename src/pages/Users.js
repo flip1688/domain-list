@@ -182,14 +182,13 @@ const Users = () => {
   return (
     <>
       <Header />
-      <div className="container" style={{ textAlign: "-webkit-center" }}>
+      <div className="container overflow-auto" style={{ textAlign: "-webkit-center" }}>
         <div className="text-end">
           <button className="btn btn-sm btn-dark my-2" onClick={openModal}>
             + Create User
           </button>
         </div>
-
-        <table className="table table-bordered table-striped">
+        <table className="table table-bordered table-striped" style={{whiteSpace:"nowrap"}}>
           <thead>
             <tr>
               <th>#</th>
@@ -200,7 +199,7 @@ const Users = () => {
               <th>manage</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="overflow-auto">
             {isLoading && (
               <tr>
                 <td className="text-center" colSpan={6}>
@@ -322,10 +321,10 @@ const Users = () => {
                     required
                   >
                     <option value="">Select a role</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Jater">Jater</option>
-                    <option value="Boss">Boss</option>
-                    <option value="Team">Team</option>
+                    <option value="admin">Admin</option>
+                    <option value="jater">Jater</option>
+                    <option value="boss">Boss</option>
+                    <option value="team">Team</option>
                   </select>
                 </div>
                 <hr className="bg-dark opacity-10" />

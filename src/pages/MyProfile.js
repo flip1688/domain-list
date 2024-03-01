@@ -86,14 +86,14 @@ const MyProfile = () => {
   return (
     <>
       <Header />
-      <div className="container" style={{ textAlign: "-webkit-center" }}>
+      <div className="container overflow-auto" style={{ textAlign: "-webkit-center" }}>
         {user && (
           <div className="card mt-2" style={{ width: "1024px" }}>
             <div className="card-header bg-secondary">
               <strong className="text-white">My Profile</strong>
             </div>
             <div className="card-body p-0 overflow-auto">
-              <table className="table table-striped my-0">
+              <table className="table table-striped my-0" style={{whiteSpace:"nowrap"}}>
                 <thead>
                   <tr>
                     <th>Type</th>
