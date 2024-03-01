@@ -6,15 +6,18 @@ import Logout from "./pages/Logout";
 import Home from "./pages/Home";
 import MyProfile from "./pages/MyProfile";
 import Users from "./pages/Users";
+import Domains from "./pages/Domain";
 
 function App() {
   return (
     <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/home" element={<Home />} />
           <Route path="/user" element={<Users />} />
+          <Route path="/domain" element={<Domains />} />
           <Route path="/report" element={<Home />} />
           <Route path="/me" element={<MyProfile />} />
         </Routes>

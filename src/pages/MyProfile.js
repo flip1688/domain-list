@@ -37,8 +37,8 @@ const MyProfile = () => {
       );
 
       if (response.status === 200) {
-        setUsers(false);
         setUsers(userInfo);
+        closeModal();
       } else {
         alert("Fail to Change");
       }
@@ -54,6 +54,7 @@ const MyProfile = () => {
       const response = await ChangeOwnName(formData2.name,userAuth);
       if (response.status === 200) {
         setUsers(response.data)
+        closeModal2()
       } else {
         alert("Fail to Change");
       }
