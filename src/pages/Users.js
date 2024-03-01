@@ -12,14 +12,13 @@ import { Navigate } from "react-router";
 
 const Users = () => {
   const { userAuth } = useSelector((state) => state.auth);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [showModal3, setShowModal3] = useState(false);
   const [currentUser, setCurrentUserId] = useState(null);
   const [currentUserName, setCurrentUserName] = useState(null);
   const [users, setUsers] = useState([]);
-  const prevUsers = users;
   //const auth = JSON.parse(localStorage.getItem("auth"));
   const [formData, setFormData] = useState({
     username: "",
@@ -76,8 +75,10 @@ const Users = () => {
 
       if (response.status === 200) {
         const getUsers = async () => {
+          setIsLoading(true);
           const usersData = await fetchUsers(userAuth);
           setUsers(usersData);
+          setIsLoading(false);
         };
         getUsers();
       } else {
@@ -99,8 +100,10 @@ const Users = () => {
       );
 
       if (response.status === 200) {
+        setIsLoading(true);
         setUsers(await fetchUsers(userAuth));
         closeModal2();
+        setIsLoading(false);
       } else {
         alert("Fail to Change");
       }
@@ -120,8 +123,10 @@ const Users = () => {
       );
 
       if (response.status === 200) {
+        setIsLoading(true);
         setUsers(await fetchUsers(userAuth));
         closeModal3();
+        setIsLoading(false);
       } else {
         alert("Fail to Change");
       }
@@ -139,13 +144,15 @@ const Users = () => {
   // }, [fetchUsers]);
 
   useEffect(() => {
-      const fetchData = async () => {
-        const users = await fetchUsers(userAuth);
-        setUsers(users);
-      };
-      fetchData();
+    const fetchData = async () => {
+      setIsLoading(true);
+      const users = await fetchUsers(userAuth);
+      setUsers(users);
+      setIsLoading(false);
+    };
+    fetchData();
   }, [fetchUsers]);
-  
+
   useEffect(() => {
     if (showModal) {
       setTimeout(() => {
@@ -194,6 +201,14 @@ const Users = () => {
             </tr>
           </thead>
           <tbody>
+            {isLoading && (
+              <tr>
+                <td className="text-center" colSpan={6}>
+                  <div className="spinner-grow" role="status"></div>
+                </td>
+              </tr>
+            )}
+
             {users &&
               users.map((user, index) => (
                 <tr key={user.id}>
