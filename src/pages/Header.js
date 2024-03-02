@@ -82,14 +82,14 @@ const Header = () => {
               <li className="nav-item col-6 col-lg-auto ">
                 <Link
                   className={`nav-link border rounded m-1 px-2 ${
-                    location.pathname === "/report"
+                    location.pathname === "/payment"
                       ? "bg-secondary text-white active"
                       : ""
                   }`}
                   aria-current="page"
-                  to="/report"
+                  to="/payment"
                 >
-                  Report
+                  Payments
                 </Link>
               </li>
             </ul>

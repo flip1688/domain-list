@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const CreateNewDomain = async (name, amount, remarks, userAuth) => {
+export const CreatePayment = async (time, domainId, amount, remarks, userAuth) => {
   try {
     const config = {
       headers: {
@@ -10,11 +10,12 @@ export const CreateNewDomain = async (name, amount, remarks, userAuth) => {
     };
 
     const response = await axios.post(
-      "/api/domain",
+      "/api/payment",
       {
-        name,
+        time,
+        domainId,
         amount,
-        remarks,
+        remarks
       },
       config
     );
@@ -31,7 +32,7 @@ export const CreateNewDomain = async (name, amount, remarks, userAuth) => {
   }
 };
 
-export const fetchDomains = async (params ,userAuth) => {
+export const fetchPayments = async (params,userAuth) => {
 
   try {
     const config = {
@@ -42,7 +43,7 @@ export const fetchDomains = async (params ,userAuth) => {
       },
     };
 
-    const response = await axios.get("/api/domain", config);
+    const response = await axios.get(`/api/payment`, config);
 
     if (response.status === 200) {
       return response.data;
@@ -54,7 +55,7 @@ export const fetchDomains = async (params ,userAuth) => {
   }
 };
 
-export const updateDomainName = async (domain_id, name, userAuth) => {
+export const updatePaymentTime = async (payment_id, time, userAuth) => {
   try {
     const config = {
       headers: {
@@ -64,8 +65,8 @@ export const updateDomainName = async (domain_id, name, userAuth) => {
     };
 
     const response = await axios.post(
-      `/api/domain/${domain_id}/name`,
-      { name },
+      `/api/payment/${payment_id}/time`,
+      { time },
       config
     );
 
@@ -80,7 +81,7 @@ export const updateDomainName = async (domain_id, name, userAuth) => {
   }
 };
 
-export const updateDomainAmount = async (domain_id, amount, userAuth) => {
+export const updatePaymentAmount = async (payment_id, amount, userAuth) => {
   try {
     const config = {
       headers: {
@@ -90,7 +91,7 @@ export const updateDomainAmount = async (domain_id, amount, userAuth) => {
     };
 
     const response = await axios.post(
-      `/api/domain/${domain_id}/amount`,
+      `/api/payment/${payment_id}/amount`,
       { amount },
       config
     );
@@ -106,7 +107,7 @@ export const updateDomainAmount = async (domain_id, amount, userAuth) => {
   }
 };
 
-export const updateDomainRemarks = async (domain_id, remarks, userAuth) => {
+export const updatePaymentRemarks = async (payment_id, remarks, userAuth) => {
   try {
     const config = {
       headers: {
@@ -116,7 +117,7 @@ export const updateDomainRemarks = async (domain_id, remarks, userAuth) => {
     };
 
     const response = await axios.post(
-      `/api/domain/${domain_id}/remarks`,
+      `/api/payment/${payment_id}/remarks`,
       { remarks },
       config
     );
@@ -132,7 +133,7 @@ export const updateDomainRemarks = async (domain_id, remarks, userAuth) => {
   }
 };
 
-export const updateDomainStatus = async (domain_id, status, userAuth) => {
+export const updatePaymentDomain = async (payment_id, domainId, userAuth) => {
   try {
     const config = {
       headers: {
@@ -142,8 +143,8 @@ export const updateDomainStatus = async (domain_id, status, userAuth) => {
     };
 
     const response = await axios.post(
-      `/api/domain/${domain_id}/status`,
-      { status },
+      `/api/payment/${payment_id}/domain`,
+      { domainId },
       config
     );
 

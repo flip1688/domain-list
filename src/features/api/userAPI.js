@@ -41,9 +41,10 @@ export const ChangeOwnPass = async (password, newPassword, userAuth) => {
   }
 };
 
-export const fetchUsers = async (userAuth) => {
+export const fetchUsers = async (params , userAuth) => {
   try {
     const config = {
+      params,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${userAuth.accessToken}`,
@@ -53,7 +54,7 @@ export const fetchUsers = async (userAuth) => {
     const response = await axios.get("/api/user", config);
 
     if (response.status === 200) {
-      return response.data.data;
+      return response.data;
     } else {
       return false;
     }

@@ -1,15 +1,15 @@
+import * as React from "react";
 import { useEffect, useState } from "react";
 import Header from "./Header";
 import { useSelector } from "react-redux";
 import {
-  CreateNewDomain,
-  fetchDomains,
-  updateDomainName,
-  updateDomainAmount,
-  updateDomainRemarks,
-  updateDomainStatus,
-} from "../features/api/domainAPI";
-
+  CreatePayment,
+  fetchPayments,
+  updatePaymentTime,
+  updatePaymentAmount,
+  updatePaymentRemarks,
+  updatePaymentDomain,
+} from "../features/api/paymentAPI";
 import Stack from "@mui/material/Stack";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -20,7 +20,9 @@ import PaginationItem from "@mui/material/PaginationItem";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-const Domains = () => {
+import { fetchDomains } from "../features/api/domainAPI";
+
+const Payments = () => {
   const { userAuth } = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal0, setShowModal0] = useState(false);
@@ -28,85 +30,93 @@ const Domains = () => {
   const [showModal2, setShowModal2] = useState(false);
   const [showModal3, setShowModal3] = useState(false);
   const [showModal4, setShowModal4] = useState(false);
-  const [currentUser, setCurrentUserId] = useState(null);
-  const [currentUserName, setCurrentUserName] = useState(null);
-  const [domains, setDomain] = useState([]);
-  const [domainsPage, setDomainPage] = useState([]);
+  const [currentPayment, setCurrentPayment] = useState(null);
+  const [currentPaymentDomain, setCurrentPaymentDomain] = useState(null);
+  const [payments, setPayment] = useState([]);
+  const [paymentsPage, setPaymentPage] = useState([]);
+  const [TimeValue, setTimeValue] = React.useState(null);
 
   const [params, setParams] = useState({
-    name: "",
-    status: "all",
     page: 1,
     pageSize: 30,
   });
 
-  const handleFilterChange = (name, value) => {
-    setParams((prevParams) => ({
-      ...prevParams,
-      [name]: value,
-    }));
-  };
-
-  const [formData0, setFormData0] = useState({
+  const [domains, setDomains] = useState([]);
+  const [paramsDomain, setParamsDomain] = useState({
     name: "",
+    status: "all",
+    page: 1,
+    pageSize: 30,
+    domainId: "", // เพิ่ม domainId เข้าไปใน params
+  });
+
+  const [formData0, setFormData0] = React.useState({
+    time: TimeValue,
+    domainId: "",
     amount: "",
     remarks: "",
   });
 
   const [formData, setFormData] = useState({
-    user_id: "",
-    name: "",
+    payment_id: "",
+    time: "",
   });
 
   const [formData2, setFormData2] = useState({
-    user_id: "",
-    status: "",
+    payment_id: "",
+    amount: "",
   });
 
   const [formData3, setFormData3] = useState({
-    user_id: "",
+    payment_id: "",
     remarks: "",
   });
 
   const [formData4, setFormData4] = useState({
-    user_id: "",
-    status: "",
+    payment_id: "",
+    domainId: "",
   });
   const openModal0 = () => {
+    const fetchData = async () => {
+      const domainsData = await fetchDomains(params, userAuth);
+      setDomains(domainsData.data);
+    };
+    fetchData();
+    console.log(domains);
     setShowModal0(true);
   };
   const closeModal0 = () => {
     setShowModal0(false);
   };
 
-  const openModal = (user_id, user_name) => {
+  const openModal = (payment_id, payment_domain) => {
     setShowModal(true);
-    setCurrentUserId(user_id);
-    setCurrentUserName(user_name);
+    setCurrentPayment(payment_id);
+    setCurrentPaymentDomain(payment_domain);
   };
   const closeModal = () => {
     setShowModal(false);
   };
-  const openModal2 = (user_id, user_name) => {
+  const openModal2 = (payment_id, payment_domain) => {
     setShowModal2(true);
-    setCurrentUserId(user_id);
-    setCurrentUserName(user_name);
+    setCurrentPayment(payment_id);
+    setCurrentPaymentDomain(payment_domain);
   };
   const closeModal2 = () => {
     setShowModal2(false);
   };
-  const openModal3 = (user_id, user_name) => {
+  const openModal3 = (payment_id, payment_domain) => {
     setShowModal3(true);
-    setCurrentUserId(user_id);
-    setCurrentUserName(user_name);
+    setCurrentPayment(payment_id);
+    setCurrentPaymentDomain(payment_domain);
   };
   const closeModal3 = () => {
     setShowModal3(false);
   };
-  const openModal4 = (user_id, user_name) => {
+  const openModal4 = (payment_id, payment_domain) => {
     setShowModal4(true);
-    setCurrentUserId(user_id);
-    setCurrentUserName(user_name);
+    setCurrentPayment(payment_id);
+    setCurrentPaymentDomain(payment_domain);
   };
   const closeModal4 = () => {
     setShowModal4(false);
@@ -118,12 +128,28 @@ const Domains = () => {
   const [show3, setShow3] = useState(false);
   const [show4, setShow4] = useState(false);
 
+  const handleSearchInputChange = (e) => {
+    const { value } = e.target;
+    setParamsDomain((prevParams) => ({
+      ...prevParams,
+      name: value,
+    }));
+    console.log(formData0);
+  };
+
+  const handleFilterChange = (name, value) => {
+    setParams((prevParams) => ({
+      ...prevParams,
+      [name]: value,
+    }));
+  };
+
   const handleSubmit0 = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await CreateNewDomain(
-        formData0.name,
+      const response = await CreatePayment(
+        formData0.time,
+        formData0.domainId,
         formData0.amount,
         formData0.remarks,
         userAuth
@@ -132,9 +158,9 @@ const Domains = () => {
       if (response.status === 200) {
         const getUsers = async () => {
           setIsLoading(true);
-          const domainsData = await fetchDomains(params, userAuth);
-          setDomain(domainsData.data);
-          setDomainPage(domainsData);
+          const paymentData = await fetchPayments(params, userAuth);
+          setPayment(paymentData.data);
+          setPaymentPage(paymentData);
           setIsLoading(false);
           closeModal0();
         };
@@ -151,22 +177,22 @@ const Domains = () => {
     e.preventDefault();
 
     try {
-      const response = await updateDomainName(
-        currentUser,
-        formData.name,
+      const response = await updatePaymentTime(
+        currentPayment,
+        formData.time,
         userAuth
       );
 
       if (response.status === 200) {
-        const getDomains = async () => {
+        const getPayments = async () => {
           setIsLoading(true);
-          const domainsData = await fetchDomains(params, userAuth);
-          setDomain(domainsData.data);
-          setDomainPage(domainsData);
+          const paymentData = await fetchPayments(params, userAuth);
+          setPayment(paymentData.data);
+          setPaymentPage(paymentData);
           setIsLoading(false);
           closeModal();
         };
-        getDomains();
+        getPayments();
       } else {
         alert("Fail to Create");
       }
@@ -179,22 +205,22 @@ const Domains = () => {
     e.preventDefault();
 
     try {
-      const response = await updateDomainAmount(
-        currentUser,
+      const response = await updatePaymentAmount(
+        currentPayment,
         formData2.amount,
         userAuth
       );
 
       if (response.status === 200) {
-        const getDomains = async () => {
+        const getPayments = async () => {
           setIsLoading(true);
-          const domainsData = await fetchDomains(params, userAuth);
-          setDomain(domainsData.data);
-          setDomainPage(domainsData);
+          const paymentData = await fetchPayments(params, userAuth);
+          setPayment(paymentData.data);
+          setPaymentPage(paymentData);
           setIsLoading(false);
           closeModal2();
         };
-        getDomains();
+        getPayments();
       } else {
         alert("Fail to Create");
       }
@@ -207,22 +233,22 @@ const Domains = () => {
     e.preventDefault();
 
     try {
-      const response = await updateDomainRemarks(
-        currentUser,
+      const response = await updatePaymentRemarks(
+        currentPayment,
         formData3.remarks,
         userAuth
       );
 
       if (response.status === 200) {
-        const getDomains = async () => {
+        const getPayments = async () => {
           setIsLoading(true);
-          const domainsData = await fetchDomains(params, userAuth);
-          setDomain(domainsData.data);
-          setDomainPage(domainsData);
+          const paymentData = await fetchPayments(params, userAuth);
+          setPayment(paymentData.data);
+          setPaymentPage(paymentData);
           setIsLoading(false);
           closeModal3();
         };
-        getDomains();
+        getPayments();
       } else {
         alert("Fail to Create");
       }
@@ -235,22 +261,22 @@ const Domains = () => {
     e.preventDefault();
 
     try {
-      const response = await updateDomainStatus(
-        currentUser,
-        formData4.status,
+      const response = await updatePaymentDomain(
+        currentPayment,
+        formData4.domainId,
         userAuth
       );
 
       if (response.status === 200) {
-        const getDomains = async () => {
+        const getPayments = async () => {
           setIsLoading(true);
-          const domainsData = await fetchDomains(params, userAuth);
-          setDomain(domainsData.data);
-          setDomainPage(domainsData);
+          const paymentData = await fetchPayments(params, userAuth);
+          setPayment(paymentData.data);
+          setPaymentPage(paymentData);
           setIsLoading(false);
           closeModal4();
         };
-        getDomains();
+        getPayments();
       } else {
         alert("Fail to Create");
       }
@@ -260,26 +286,34 @@ const Domains = () => {
   };
 
   useEffect(() => {
-    const getDomains = async () => {
+    const getPayments = async () => {
       setIsLoading(true);
-      const domainsData = await fetchDomains(params, userAuth);
-      setDomain(domainsData.data);
-      setDomainPage(domainsData);
+      const paymentData = await fetchPayments(params, userAuth);
+      setPayment(paymentData.data);
+      setPaymentPage(paymentData);
       setIsLoading(false);
     };
-    getDomains();
-  }, [fetchDomains]);
+    getPayments();
+  }, [fetchPayments]);
 
   useEffect(() => {
     const searchByParams = async () => {
       setIsLoading(true);
-      const domainsData = await fetchDomains(params, userAuth);
-      setDomain(domainsData.data);
-      setDomainPage(domainsData);
+      const paymentData = await fetchPayments(params, userAuth);
+      setPayment(paymentData.data);
+      setPaymentPage(paymentData);
       setIsLoading(false);
     };
     searchByParams();
   }, [params, userAuth]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const domainsData = await fetchDomains(paramsDomain, userAuth);
+      setDomains(domainsData.data);
+    };
+    fetchData();
+  }, [paramsDomain, userAuth]);
 
   useEffect(() => {
     if (showModal0) {
@@ -323,6 +357,18 @@ const Domains = () => {
     }
   }, [showModal0, showModal, showModal2, showModal3, showModal4]);
 
+  const formatTime = (paymentTime) => {
+    const formattedTime = new Date(paymentTime).toLocaleString("th-TH", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    return formattedTime;
+  };
+
   return (
     <>
       <Header />
@@ -331,7 +377,7 @@ const Domains = () => {
         style={{ textAlign: "-webkit-center" }}
       >
         <div className="row">
-          <div className="col-3">
+          {/* <div className="col-3">
             <div className="form-group my-1 text-start">
               <label htmlFor="name">Name</label>
               <input
@@ -359,13 +405,13 @@ const Domains = () => {
                 <option value="blocked">Blocked</option>
               </select>
             </div>
-          </div>
+          </div> */}
           <div className="col text-end align-self-center">
             <button
               className="btn btn-sm btn-dark my-2"
               onClick={(e) => openModal0()}
             >
-              + Create Domain
+              + Create Payment
             </button>
           </div>
         </div>
@@ -377,10 +423,10 @@ const Domains = () => {
           <thead>
             <tr>
               <th>#</th>
-              <th>name</th>
+              <th>time</th>
+              <th>domain</th>
               <th>remarks</th>
               <th>amount</th>
-              <th>status</th>
               <th width={400}>manage</th>
             </tr>
           </thead>
@@ -393,38 +439,38 @@ const Domains = () => {
               </tr>
             )}
 
-            {domains &&
-              domains.map((domain, index) => (
-                <tr key={domain.id}>
+            {payments &&
+              payments.map((payment, index) => (
+                <tr key={payment.id}>
                   <td>{index + 1}</td>
-                  <td>{domain.name}</td>
-                  <td>{domain.remarks}</td>
-                  <td>{domain.amount}</td>
-                  <td>{domain.status}</td>
+                  <td>{formatTime(payment.time)}</td>
+                  <td>{payment.domain}</td>
+                  <td>{payment.remarks}</td>
+                  <td>{payment.amount}</td>
                   <td>
                     <button
                       className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal(domain.id, domain.name)}
+                      onClick={(e) => openModal(payment.id, payment.domain)}
                     >
-                      Edit Name
+                      Edit Time
                     </button>
                     <button
                       className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal2(domain.id, domain.name)}
+                      onClick={(e) => openModal2(payment.id, payment.domain)}
                     >
                       Edit Amount
                     </button>
                     <button
                       className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal3(domain.id, domain.name)}
+                      onClick={(e) => openModal3(payment.id, payment.domain)}
                     >
                       Edit Remarks
                     </button>
                     <button
                       className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal4(domain.id, domain.name)}
+                      onClick={(e) => openModal4(payment.id, payment.domain)}
                     >
-                      Edit Status
+                      Edit Domain
                     </button>
                   </td>
                 </tr>
@@ -468,8 +514,12 @@ const Domains = () => {
                 <Stack spacing={2}>
                   <Pagination
                     page={params.page}
-                    onChange={(e) => handleFilterChange("page", e.target.value)}
-                    count={Math.ceil(domainsPage.total / domainsPage.pageSize)}
+                    onChange={(e) =>
+                      handleFilterChange("page", e.target.value)
+                    }
+                    count={Math.ceil(
+                      paymentsPage.total / paymentsPage.pageSize
+                    )}
                     renderItem={(item) => (
                       <PaginationItem
                         slots={{
@@ -508,7 +558,7 @@ const Domains = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Create Domains : <strong className="h5"></strong>
+                Create Payments<strong className="h5"></strong>
               </h5>
               <button
                 type="button"
@@ -522,18 +572,61 @@ const Domains = () => {
             <div className="modal-body">
               <form onSubmit={handleSubmit0}>
                 <div className="form-group my-1">
-                  <label htmlFor="name">Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="name"
-                    placeholder="Enter Domain Name"
-                    value={formData0.name}
-                    onChange={(e) =>
-                      setFormData0({ ...formData0, name: e.target.value })
-                    }
-                  />
-                  <small>ให้อยู่ในรูปแบบ ex: example.com</small>
+                  <label htmlFor="time">Time</label>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Stack spacing={2} sx={{ minWidth: 305 }}>
+                      <DateTimePicker
+                        value={TimeValue}
+                        onChange={(newValue) => {
+                          setTimeValue(newValue);
+                          setFormData0({
+                            ...formData0,
+                            time: newValue.format(),
+                          });
+                        }}
+                        views={[
+                          "year",
+                          "month",
+                          "day",
+                          "hours",
+                          "minutes",
+                          "seconds",
+                        ]}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
+                </div>
+
+                <div className="form-group my-1">
+                  <label htmlFor="domainsId">domainId</label>
+                  <div className="text-end">
+                    <input
+                      type="search"
+                      className="form-control"
+                      id="search"
+                      placeholder="Search by name"
+                      value={paramsDomain.name}
+                      onChange={handleSearchInputChange}
+                    />
+                    <select
+                      className="form-select mt-2"
+                      id="domainsId"
+                      aria-label="Select Domain"
+                      value={paramsDomain.id}
+                      onChange={(e) =>
+                        setFormData0({ ...formData0, domainId: e.target.value })
+                      }
+                      data-live-search="true"
+                      multiple
+                    >
+                      {domains &&
+                        domains.map((domain) => (
+                          <option key={domain.id} value={domain.id}>
+                            {domain.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div className="form-group my-1">
@@ -595,7 +688,8 @@ const Domains = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Edit Name : <strong className="h5">{currentUserName}</strong>
+                Edit Time :{" "}
+                <strong className="h5">{currentPaymentDomain}</strong>
               </h5>
               <button
                 type="button"
@@ -609,19 +703,30 @@ const Domains = () => {
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
                 <div className="form-group my-1">
-                  <label htmlFor="name">Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="name"
-                    placeholder="Enter New Name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                  />
+                  <label htmlFor="time">time</label>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Stack spacing={2} sx={{ minWidth: 305 }}>
+                      <DateTimePicker
+                        value={TimeValue}
+                        onChange={(newValue) => {
+                          setTimeValue(newValue);
+                          setFormData({
+                            ...formData,
+                            time: newValue.format(),
+                          });
+                        }}
+                        views={[
+                          "year",
+                          "month",
+                          "day",
+                          "hours",
+                          "minutes",
+                          "seconds",
+                        ]}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
                 </div>
-
                 <hr className="bg-dark opacity-10" />
                 <button type="submit" className="btn btn-primary w-100">
                   Submit
@@ -652,7 +757,8 @@ const Domains = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Edit Amount : <strong className="h5">{currentUserName}</strong>
+                Edit Amount :{" "}
+                <strong className="h5">{currentPaymentDomain}</strong>
               </h5>
               <button
                 type="button"
@@ -710,7 +816,8 @@ const Domains = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Edit Remarks : <strong className="h5">{currentUserName}</strong>
+                Edit Remarks :{" "}
+                <strong className="h5">{currentPaymentDomain}</strong>
               </h5>
               <button
                 type="button"
@@ -767,7 +874,8 @@ const Domains = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Edit Status : <strong className="h5">{currentUserName}</strong>
+                Edit Domain :{" "}
+                <strong className="h5">{currentPaymentDomain}</strong>
               </h5>
               <button
                 type="button"
@@ -781,22 +889,36 @@ const Domains = () => {
             <div className="modal-body">
               <form onSubmit={handleSubmit4}>
                 <div className="form-group my-1">
-                  <label htmlFor="status">Status</label>
-                  <select
-                    id="amount"
-                    className="form-control"
-                    value={formData4.status}
-                    onChange={(e) =>
-                      setFormData4({ ...formData4, status: e.target.value })
-                    }
-                    required
-                  >
-                    <option value="">Select a status</option>
-                    <option value="active">active</option>
-                    <option value="blocked">blocked</option>
-                  </select>
+                  <label htmlFor="domainsId">domainId</label>
+                  <div className="text-end">
+                    <input
+                      type="search"
+                      className="form-control"
+                      id="search"
+                      placeholder="Search by name"
+                      value={paramsDomain.name}
+                      onChange={handleSearchInputChange}
+                    />
+                    <select
+                      className="form-select mt-2"
+                      id="domainsId"
+                      aria-label="Select Domain"
+                      value={paramsDomain.id}
+                      onChange={(e) =>
+                        setFormData4({ ...formData4, domainId: e.target.value })
+                      }
+                      data-live-search="true"
+                      multiple
+                    >
+                      {domains &&
+                        domains.map((domain) => (
+                          <option key={domain.id} value={domain.id}>
+                            {domain.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
                 </div>
-
                 <hr className="bg-dark opacity-10" />
                 <button type="submit" className="btn btn-primary w-100">
                   Submit
@@ -806,8 +928,9 @@ const Domains = () => {
           </div>
         </div>
       </div>
+      <script>$('#domainsId').selectpicker();</script>
     </>
   );
 };
 
-export default Domains;
+export default Payments;
