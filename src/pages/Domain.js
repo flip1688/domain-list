@@ -333,7 +333,7 @@ const Domains = () => {
         <div className="row">
           <div className="col-3">
             <div className="form-group my-1 text-start">
-              <label htmlFor="name">Name</label>
+              <label htmlFor="name">ชื่อเว็บ</label>
               <input
                 type="text"
                 className="form-control"
@@ -346,7 +346,7 @@ const Domains = () => {
           </div>
           <div className="col-3">
             <div className="form-group my-1 text-start">
-              <label htmlFor="status">Status</label>
+              <label htmlFor="status">สถานะ</label>
               <select
                 id="status"
                 className="form-control"
@@ -365,7 +365,7 @@ const Domains = () => {
               className="btn btn-sm btn-dark my-2"
               onClick={(e) => openModal0()}
             >
-              + Create Domain
+              + สร้างรายการเว็บใหม่
             </button>
           </div>
         </div>
@@ -377,11 +377,11 @@ const Domains = () => {
           <thead>
             <tr>
               <th>#</th>
-              <th>name</th>
-              <th>remarks</th>
-              <th>amount</th>
-              <th>status</th>
-              <th width={400}>manage</th>
+              <th>ชื่อเว็บ</th>
+              <th>หมายเหตุ</th>
+              <th>จำนวนเงิน</th>
+              <th>สถานะ</th>
+              <th width={400}>จัดการ</th>
             </tr>
           </thead>
           <tbody>
@@ -406,13 +406,13 @@ const Domains = () => {
                       className="btn btn-sm btn-dark mx-1"
                       onClick={(e) => openModal(domain.id, domain.name)}
                     >
-                      Edit Name
+                      แก้ไขชื่อเว็บ
                     </button>
                     <button
                       className="btn btn-sm btn-dark mx-1"
                       onClick={(e) => openModal2(domain.id, domain.name)}
                     >
-                      Edit Amount
+                      แก้ไขจำนวนเงิน
                     </button>
                     <button
                       className="btn btn-sm btn-dark mx-1"
@@ -424,7 +424,7 @@ const Domains = () => {
                       className="btn btn-sm btn-dark mx-1"
                       onClick={(e) => openModal4(domain.id, domain.name)}
                     >
-                      Edit Status
+                      แก้ไขสถานะ
                     </button>
                   </td>
                 </tr>
@@ -508,7 +508,7 @@ const Domains = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Create Domains : <strong className="h5"></strong>
+                สร้างรายการเว็บใหม่ : <strong className="h5"></strong>
               </h5>
               <button
                 type="button"
@@ -522,7 +522,7 @@ const Domains = () => {
             <div className="modal-body">
               <form onSubmit={handleSubmit0}>
                 <div className="form-group my-1">
-                  <label htmlFor="name">Name</label>
+                  <label htmlFor="name">ชื่อเว็บ</label>
                   <input
                     type="text"
                     className="form-control"
@@ -537,7 +537,7 @@ const Domains = () => {
                 </div>
 
                 <div className="form-group my-1">
-                  <label htmlFor="amount">Amount</label>
+                  <label htmlFor="amount">จำนวนเงิน</label>
                   <input
                     type="number"
                     className="form-control"
@@ -552,7 +552,7 @@ const Domains = () => {
                 </div>
 
                 <div className="form-group my-1">
-                  <label htmlFor="remarks">Remarks</label>
+                  <label htmlFor="remarks">หมายเหตุ</label>
                   <input
                     type="text"
                     className="form-control"

@@ -63,7 +63,7 @@ const Header = () => {
                   aria-current="page"
                   to="/user"
                 >
-                  Users
+                  ผู้ใช้งาน
                 </Link>
               </li>
               <li className="nav-item col-6 col-lg-auto ">
@@ -76,7 +76,7 @@ const Header = () => {
                   aria-current="page"
                   to="/domain"
                 >
-                  Domains
+                  รายชื่อเว็บ
                 </Link>
               </li>
               <li className="nav-item col-6 col-lg-auto ">
@@ -89,7 +89,7 @@ const Header = () => {
                   aria-current="page"
                   to="/payment"
                 >
-                  Payments
+                  การชำระเงิน
                 </Link>
               </li>
             </ul>

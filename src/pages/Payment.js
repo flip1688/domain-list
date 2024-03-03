@@ -411,7 +411,7 @@ const Payments = () => {
               className="btn btn-sm btn-dark my-2"
               onClick={(e) => openModal0()}
             >
-              + Create Payment
+              + สร้างรายการใหม่
             </button>
           </div>
         </div>
@@ -423,11 +423,11 @@ const Payments = () => {
           <thead>
             <tr>
               <th>#</th>
-              <th>time</th>
-              <th>domain</th>
-              <th>remarks</th>
-              <th>amount</th>
-              <th width={400}>manage</th>
+              <th>เวลารายการ</th>
+              <th>ชื่อเว็บ</th>
+              <th>หมายเหตุ</th>
+              <th>จำนวนเงิน</th>
+              <th width={400}>จัดการ</th>
             </tr>
           </thead>
           <tbody>
@@ -452,25 +452,25 @@ const Payments = () => {
                       className="btn btn-sm btn-dark mx-1"
                       onClick={(e) => openModal(payment.id, payment.domain)}
                     >
-                      Edit Time
+                      แก้ไขเวลารายการ
                     </button>
                     <button
                       className="btn btn-sm btn-dark mx-1"
                       onClick={(e) => openModal2(payment.id, payment.domain)}
                     >
-                      Edit Amount
+                      แก้ไขจำนวนเงิน
                     </button>
                     <button
                       className="btn btn-sm btn-dark mx-1"
                       onClick={(e) => openModal3(payment.id, payment.domain)}
                     >
-                      Edit Remarks
+                      แก้ไขหมายเหตุ
                     </button>
                     <button
                       className="btn btn-sm btn-dark mx-1"
                       onClick={(e) => openModal4(payment.id, payment.domain)}
                     >
-                      Edit Domain
+                      แก้ไขชื่อเว็บ
                     </button>
                   </td>
                 </tr>
@@ -572,7 +572,7 @@ const Payments = () => {
             <div className="modal-body">
               <form onSubmit={handleSubmit0}>
                 <div className="form-group my-1">
-                  <label htmlFor="time">Time</label>
+                  <label htmlFor="time">เวลาของรายการ</label>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Stack spacing={2} sx={{ minWidth: 305 }}>
                       <DateTimePicker
@@ -611,7 +611,7 @@ const Payments = () => {
                     <select
                       className="form-select mt-2"
                       id="domainsId"
-                      aria-label="Select Domain"
+                      aria-label="ค้นหาชื่อเว็บ"
                       value={paramsDomain.id}
                       onChange={(e) =>
                         setFormData0({ ...formData0, domainId: e.target.value })
@@ -630,12 +630,12 @@ const Payments = () => {
                 </div>
 
                 <div className="form-group my-1">
-                  <label htmlFor="amount">Amount</label>
+                  <label htmlFor="amount">จำนวนเงิน</label>
                   <input
                     type="number"
                     className="form-control"
                     id="amount"
-                    placeholder="Enter amount"
+                    placeholder="ระบุจำนวนเงิน"
                     value={formData0.amount}
                     step="any"
                     onChange={(e) =>
@@ -645,12 +645,12 @@ const Payments = () => {
                 </div>
 
                 <div className="form-group my-1">
-                  <label htmlFor="remarks">Remarks</label>
+                  <label htmlFor="remarks">หมายเหตุ</label>
                   <input
                     type="text"
                     className="form-control"
                     id="remarks"
-                    placeholder="Enter Remarks"
+                    placeholder="ระบุหมายเหตุ"
                     value={formData0.remarks}
                     onChange={(e) =>
                       setFormData0({ ...formData0, remarks: e.target.value })
