@@ -13,11 +13,11 @@ const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userAuth) {
-      dispatch(userRefreshToken(userAuth));
-    } else {
-      navigate("/");
-    }
+    // if (userAuth) {
+    //   dispatch(userRefreshToken(userAuth));
+    // } else {
+    //   navigate("/");
+    // }
   }, []);
 
   return (
@@ -166,24 +166,24 @@ const Header = () => {
       </nav>
 
       <div
-        class="offcanvas offcanvas-start"
+        className="offcanvas offcanvas-start"
         tabindex="-1"
         id="offcanvasExample"
         aria-labelledby="offcanvasExampleLabel"
       >
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+        <div className="offcanvas-header">
+          <h5 className="offcanvas-title" id="offcanvasExampleLabel">
             Menu
           </h5>
           <button
             type="button"
-            class="btn-close"
+            className="btn-close"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
           ></button>
         </div>
-        <div class="offcanvas-body">
-          <div class="dropdown mt-3">
+        <div className="offcanvas-body">
+          <div className="dropdown mt-3">
             <ul className="navbar-nav flex-row flex-wrap ms-lg-auto w-auto">
               <li className="nav-item col-6 col-lg-auto ">
                 <Link

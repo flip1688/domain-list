@@ -12,13 +12,13 @@ const Sidebar = () => {
   const username = userInfo ? userInfo.username : null;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (userAuth) {
-      dispatch(userRefreshToken(userAuth));
-    } else {
-      navigate("/");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (userAuth) {
+  //     dispatch(userRefreshToken(userAuth));
+  //   } else {
+  //     navigate("/");
+  //   }
+  // }, []);
 
   return (
     <ul className="navbar-nav flex-wrap ms-lg-auto w-auto">
