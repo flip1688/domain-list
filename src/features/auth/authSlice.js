@@ -51,10 +51,14 @@ const authSlice = createSlice({
     });
 
      builder.addCase(userRefreshToken.fulfilled, (state, { payload }) => {
-      state.loading = false
-      // state.userInfo = payload.data
-      state.userAuth = payload
-      localStorage.setItem("auth", JSON.stringify(payload))
+      if (payload) {
+        state.loading = false
+        // state.userInfo = payload.data
+        console.log("payload",payload);
+        state.userAuth = payload
+        localStorage.setItem("auth", JSON.stringify(payload))
+      }
+     
     });
     
     builder.addCase(userRefreshToken.rejected, (state, { payload }) => {

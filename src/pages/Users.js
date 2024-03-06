@@ -243,12 +243,12 @@ const Users = () => {
               <div className="row">
                 <div className="col-3">
                   <div className="form-group my-1 text-start">
-                    <label htmlFor="name">Name</label>
+                    <label htmlFor="name">Username</label>
                     <input
                       type="text"
                       className="form-control"
                       id="name"
-                      placeholder="Enter Domain Name"
+                      placeholder="กรอก Username"
                       value={params.name}
                       onChange={(e) =>
                         handleFilterChange("username", e.target.value)
@@ -258,7 +258,7 @@ const Users = () => {
                 </div>
                 <div className="col-2">
                   <div className="form-group my-1 text-start">
-                    <label htmlFor="status">Status</label>
+                    <label htmlFor="status">สถานะ</label>
                     <select
                       id="status"
                       className="form-control"
@@ -268,6 +268,7 @@ const Users = () => {
                         handleFilterChange("status", e.target.value)
                       }
                     >
+                      <option value="">ทั้งหมด</option>
                       <option value="active">Active</option>
                       <option value="blocked">Blocked</option>
                     </select>
@@ -275,7 +276,7 @@ const Users = () => {
                 </div>
                 <div className="col-2">
                   <div className="form-group my-1 text-start">
-                    <label htmlFor="status">Role</label>
+                    <label htmlFor="status">ตำแหน่ง</label>
                     <select
                       id="role"
                       className="form-control"
@@ -285,10 +286,11 @@ const Users = () => {
                         handleFilterChange("role", e.target.value)
                       }
                     >
-                      <option value="admin">admin</option>
-                      <option value="jater">jater</option>
-                      <option value="boss">boss</option>
-                      <option value="team">team</option>
+                      <option value="">ทั้งหมด</option>
+                      <option value="admin">Admin</option>
+                      <option value="jater">Jater</option>
+                      <option value="boss">Boss</option>
+                      <option value="team">Team</option>
                     </select>
                   </div>
                 </div>

@@ -404,13 +404,13 @@ const Payments = () => {
                 </div>
                 <div className="col-6 col-lg-3 align-self-center">
                   <div className="form-group my-1">
-                    <label htmlFor="domainsId">domainId</label>
+                    <label htmlFor="domainsId">ชื่อเว็บ</label>
                     <div className="text-end">
                       <input
                         type="search"
                         className="form-control"
                         id="search"
-                        placeholder="Search by name"
+                        placeholder="ค้นหาโดยชื่อเว็บ"
                         value={paramsDomain.name}
                         onChange={handleSearchInputChange}
                       />
@@ -440,7 +440,7 @@ const Payments = () => {
                 </div>
                 <div className="col-6 col-lg-3 align-self-center">
                   <div className="form-group my-1 text-start">
-                    <label htmlFor="status">createdBy</label>
+                    <label htmlFor="status">บันทึกโดย</label>
                     <input
                       type="search"
                       className="form-control"

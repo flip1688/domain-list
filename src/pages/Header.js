@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { userRefreshToken } from "../features/auth/authActions";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const username = userInfo ? userInfo.username : null;
   const navigate = useNavigate();
-
+  const authRef = useRef(userAuth); 
   useEffect(() => {
     // if (userAuth) {
     //   dispatch(userRefreshToken(userAuth));
@@ -167,7 +167,7 @@ const Header = () => {
 
       <div
         className="offcanvas offcanvas-start"
-        tabindex="-1"
+        tabIndex="-1"
         id="offcanvasExample"
         aria-labelledby="offcanvasExampleLabel"
       >

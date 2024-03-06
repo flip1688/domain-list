@@ -74,6 +74,19 @@ const Sidebar = () => {
           การชำระเงิน
         </Link>
       </li>
+      <li className="nav-item col-6 col-lg-auto ">
+        <Link
+          className={`nav-link border rounded m-1 px-2 ${
+            location.pathname === "/docs"
+              ? "bg-secondary text-white active"
+              : ""
+          }`}
+          aria-current="page"
+          to="/docs"
+        >
+          คู่มือการใช้งาน
+        </Link>
+      </li>
     </ul>
   );
 };

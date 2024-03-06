@@ -8,6 +8,7 @@ import MyProfile from "./pages/MyProfile";
 import Users from "./pages/Users";
 import Domains from "./pages/Domain";
 import Payments from "./pages/Payment";
+import Docs from "./pages/Docs";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/domain" element={<Domains />} />
           <Route path="/payment" element={<Payments />} />
           <Route path="/me" element={<MyProfile />} />
+          <Route path="/docs" element={<Docs />} />
         </Routes>
     </BrowserRouter>
   );
