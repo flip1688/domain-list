@@ -8,7 +8,7 @@ const Logout = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    localStorage.removeItem("auth");
+    localStorage.clear();
     dispatch(logout());
     navigate("/login");
   }, [logout]);

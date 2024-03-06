@@ -308,10 +308,10 @@ const Users = () => {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>username</th>
-                    <th>name</th>
-                    <th>role</th>
-                    <th>status</th>
+                    <th>Username</th>
+                    <th>ชื่อ</th>
+                    <th>ตำแหน่ง</th>
+                    <th>สถานะ</th>
                     <th width={400}>manage</th>
                   </tr>
                 </thead>
@@ -456,6 +456,24 @@ const Users = () => {
             <div className="modal-body">
               {/* ฟอร์มสำหรับการสร้าง user */}
               <form onSubmit={handleSubmit}>
+              <div className="form-group my-1">
+                  <label htmlFor="role">ตำแหน่ง:</label>
+                  <select
+                    id="role"
+                    className="form-control"
+                    value={formData.role}
+                    onChange={(e) =>
+                      setFormData({ ...formData, role: e.target.value })
+                    }
+                    required
+                  >
+                    <option value=""> เลือกตำแหน่ง</option>
+                    <option value="admin">Admin</option>
+                    <option value="jater">Jater</option>
+                    <option value="boss">Boss</option>
+                    <option value="team">Team</option>
+                  </select>
+                </div>
                 <div className="form-group my-1">
                   <label htmlFor="username">Username</label>
                   <input
@@ -470,7 +488,7 @@ const Users = () => {
                   />
                 </div>
                 <div className="form-group my-1">
-                  <label htmlFor="password">Password</label>
+                  <label htmlFor="password">รหัสผ่าน</label>
                   <input
                     type="password"
                     className="form-control"
@@ -483,7 +501,7 @@ const Users = () => {
                   />
                 </div>
                 <div className="form-group my-1">
-                  <label htmlFor="name">Name</label>
+                  <label htmlFor="name">ชื่อ</label>
                   <input
                     type="text"
                     className="form-control"
@@ -494,24 +512,6 @@ const Users = () => {
                       setFormData({ ...formData, name: e.target.value })
                     }
                   />
-                </div>
-                <div className="form-group my-1">
-                  <label htmlFor="role">Role:</label>
-                  <select
-                    id="role"
-                    className="form-control"
-                    value={formData.role}
-                    onChange={(e) =>
-                      setFormData({ ...formData, role: e.target.value })
-                    }
-                    required
-                  >
-                    <option value="">Select a role</option>
-                    <option value="admin">Admin</option>
-                    <option value="jater">Jater</option>
-                    <option value="boss">Boss</option>
-                    <option value="team">Team</option>
-                  </select>
                 </div>
                 <hr className="bg-dark opacity-10" />
                 <button type="submit" className="btn btn-primary w-100">

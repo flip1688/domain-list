@@ -525,8 +525,9 @@ const Payments = () => {
                     <th>#</th>
                     <th>เวลารายการ</th>
                     <th>ชื่อเว็บ</th>
-                    <th>หมายเหตุ</th>
                     <th>จำนวนเงิน</th>
+                    <th>บันทึกโดย</th>
+                    <th>หมายเหตุ</th>
                     <th width={400}>จัดการ</th>
                   </tr>
                 </thead>
@@ -545,8 +546,9 @@ const Payments = () => {
                         <td>{index + 1}</td>
                         <td>{formatTime(payment.time)}</td>
                         <td>{payment.domain}</td>
+                        <td className="text-end">{new Intl.NumberFormat().format(payment.amount)}</td>
+                        <td>{payment.createdBy}</td>
                         <td>{payment.remarks}</td>
-                        <td>{payment.amount}</td>
                         <td>
                           <button
                             className="btn  btn-outline-light mx-1"
@@ -585,7 +587,7 @@ const Payments = () => {
                     ))}
                   <tr>
                     <td>Total : {paymentsPage.total}</td>
-                    <td colSpan={5}></td>
+                    <td colSpan={6} className="text-end">ยอดรวม: {paymentsPage.sum}</td>
                   </tr>
                 </tbody>
               </table>
@@ -719,7 +721,7 @@ const Payments = () => {
                 </div>
 
                 <div className="form-group my-1">
-                  <label htmlFor="domainsId">domainId</label>
+                  <label htmlFor="domainsId">ชื่อเว็บ</label>
                   <div className="text-end">
                     <input
                       type="search"

@@ -413,7 +413,7 @@ const Domains = () => {
                         <td>{index + 1}</td>
                         <td>{domain.name}</td>
                         <td>{domain.remarks}</td>
-                        <td>{domain.amount}</td>
+                        <td className="text-end">{new Intl.NumberFormat().format(domain.amount)}</td>
                         <td>{domain.status}</td>
                         <td>
                           <button
