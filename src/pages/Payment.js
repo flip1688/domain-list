@@ -21,6 +21,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import { fetchDomains } from "../features/api/domainAPI";
+import { light } from "@mui/material/styles/createPalette";
+import Sidebar from "./Sidebar";
 
 const Payments = () => {
   const { userAuth } = useSelector((state) => state.auth);
@@ -35,8 +37,14 @@ const Payments = () => {
   const [payments, setPayment] = useState([]);
   const [paymentsPage, setPaymentPage] = useState([]);
   const [TimeValue, setTimeValue] = React.useState(null);
+  const [TimeFromValue, setTimeFromValue] = React.useState(null);
+  const [TimeToValue, setTimeToValue] = React.useState(null);
 
   const [params, setParams] = useState({
+    domainId: "",
+    createdBy: "",
+    from: "",
+    to: "",
     page: 1,
     pageSize: 30,
   });
@@ -369,168 +377,280 @@ const Payments = () => {
     return formattedTime;
   };
 
+  console.log(paymentsPage);
   return (
     <>
-      <Header />
-      <div
-        className="container overflow-auto"
-        style={{ textAlign: "-webkit-center" }}
-      >
-        <div className="row">
-          {/* <div className="col-3">
-            <div className="form-group my-1 text-start">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                placeholder="Enter Domain Name"
-                value={params.name}
-                onChange={(e) => handleFilterChange("name", e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="col-3">
-            <div className="form-group my-1 text-start">
-              <label htmlFor="status">Status</label>
-              <select
-                id="status"
-                className="form-control"
-                style={{ cursor: "pointer" }}
-                value={params.status}
-                onChange={(e) => handleFilterChange("status", e.target.value)}
-              >
-                <option value="all">All</option>
-                <option value="active">Active</option>
-                <option value="blocked">Blocked</option>
-              </select>
-            </div>
-          </div> */}
-          <div className="col text-end align-self-center">
-            <button
-              className="btn btn-sm btn-dark my-2"
-              onClick={(e) => openModal0()}
-            >
-              + สร้างรายการใหม่
-            </button>
-          </div>
+      <div className="container-fluid">
+        <div className="row bg-body-tertiary">
+          <Header />
         </div>
-        {/* Show loading indicator */}
-        <table
-          className="table table-bordered table-striped"
-          style={{ whiteSpace: "nowrap" }}
-        >
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>เวลารายการ</th>
-              <th>ชื่อเว็บ</th>
-              <th>หมายเหตุ</th>
-              <th>จำนวนเงิน</th>
-              <th width={400}>จัดการ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading && (
-              <tr>
-                <td className="text-center" colSpan={6}>
-                  <div className="spinner-grow" role="status"></div>
-                </td>
-              </tr>
-            )}
-
-            {payments &&
-              payments.map((payment, index) => (
-                <tr key={payment.id}>
-                  <td>{index + 1}</td>
-                  <td>{formatTime(payment.time)}</td>
-                  <td>{payment.domain}</td>
-                  <td>{payment.remarks}</td>
-                  <td>{payment.amount}</td>
-                  <td>
-                    <button
-                      className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal(payment.id, payment.domain)}
-                    >
-                      แก้ไขเวลารายการ
-                    </button>
-                    <button
-                      className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal2(payment.id, payment.domain)}
-                    >
-                      แก้ไขจำนวนเงิน
-                    </button>
-                    <button
-                      className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal3(payment.id, payment.domain)}
-                    >
-                      แก้ไขหมายเหตุ
-                    </button>
-                    <button
-                      className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal4(payment.id, payment.domain)}
-                    >
-                      แก้ไขชื่อเว็บ
-                    </button>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
         <div className="row">
-          <div className="col text-start">
-            <div
-              className="form-group align-items-center my-1"
-              style={{ width: "fit-content" }}
-            >
-              <label className="mx-2" htmlFor="pageSize">
-                Page Size :
-              </label>
-              <select
-                id="pageSize"
-                className="form-control"
-                style={{ cursor: "pointer" }}
-                value={params.pageSize}
-                onChange={(e) => handleFilterChange("pageSize", e.target.value)}
-              >
-                <option value="30">30</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-              </select>
-            </div>
+          <div className="d-none d-lg-block col-lg-2 bg-body-tertiary">
+            <Sidebar />
           </div>
-          <div className="col align-self-center">
-            <div className="form-group my-1 text-end ">
-              <label className="mx-2" htmlFor="pageNavi">
-                Page :{" "}
-              </label>
-              <div
-                className="btn-group"
-                role="group"
-                aria-label="Page navigation"
-              >
-                {/* สร้างปุ่มกดแต่ละหมายเลขหน้า */}
-                <Stack spacing={2}>
-                  <Pagination
-                    page={params.page}
-                    onChange={(e) =>
-                      handleFilterChange("page", e.target.value)
-                    }
-                    count={Math.ceil(
-                      paymentsPage.total / paymentsPage.pageSize
-                    )}
-                    renderItem={(item) => (
-                      <PaginationItem
-                        slots={{
-                          previous: ArrowBackIcon,
-                          next: ArrowForwardIcon,
-                        }}
-                        {...item}
+          <div className="col-12 col-lg-10">
+            <div
+              className="container overflow-auto"
+              style={{ textAlign: "-webkit-center" }}
+            >
+              <div className="row">
+                <div className="col-12 text-end align-self-center">
+                  <button
+                    className="btn  btn-outline-light my-2"
+                    onClick={(e) => openModal0()}
+                  >
+                    + สร้างรายการใหม่
+                  </button>
+                </div>
+                <div className="col-6 col-lg-3 align-self-center">
+                  <div className="form-group my-1">
+                    <label htmlFor="domainsId">domainId</label>
+                    <div className="text-end">
+                      <input
+                        type="search"
+                        className="form-control"
+                        id="search"
+                        placeholder="Search by name"
+                        value={paramsDomain.name}
+                        onChange={handleSearchInputChange}
                       />
-                    )}
-                  />
-                </Stack>
+                      <select
+                        className="form-select mt-2"
+                        id="domainsId"
+                        aria-label="ค้นหาชื่อเว็บ"
+                        value={paramsDomain.id}
+                        onChange={(e) =>
+                          setParams({
+                            ...params,
+                            domainId: e.target.value,
+                          })
+                        }
+                        data-live-search="true"
+                        multiple
+                      >
+                        {domains &&
+                          domains.map((domain) => (
+                            <option key={domain.id} value={domain.id}>
+                              {domain.name}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3 align-self-center">
+                  <div className="form-group my-1 text-start">
+                    <label htmlFor="status">createdBy</label>
+                    <input
+                      type="search"
+                      className="form-control"
+                      id="search"
+                      placeholder="Search by username"
+                      value={params.createdBy}
+                      onChange={(e) =>
+                        setParams({
+                          ...params,
+                          createdBy: e.target.value,
+                        })
+                      }
+                    />
+                    
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3 align-self-center">
+                  <div className="form-group my-1 text-start">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <Stack spacing={2} sx={{ minWidth: 105 }}>
+                        <DateTimePicker
+                          label="From Date"
+                          value={TimeFromValue}
+                          onChange={(newValue) => {
+                            setTimeFromValue(newValue);
+                            setParams({
+                              ...params,
+                              from: newValue.format(),
+                            });
+                          }}
+                          views={[
+                            "year",
+                            "month",
+                            "day",
+                            "hours",
+                            "minutes",
+                            "seconds",
+                          ]}
+                          className="bg-white rounded"
+                          style={{ padding: "0px !important" }}
+                        />
+                      </Stack>
+                    </LocalizationProvider>
+                  </div>
+                </div>
+                <div className="col-6 col-lg-3 align-self-center">
+                  <div className="form-group my-1 text-start">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <Stack spacing={2} sx={{ minWidth: 105 }}>
+                        <DateTimePicker
+                          label="To Date"
+                          value={TimeToValue}
+                          onChange={(newValue) => {
+                            setTimeToValue(newValue);
+                            setParams({
+                              ...params,
+                              to: newValue.format(),
+                            });
+                          }}
+                          views={[
+                            "year",
+                            "month",
+                            "day",
+                            "hours",
+                            "minutes",
+                            "seconds",
+                          ]}
+                          className="bg-white rounded"
+                        />
+                      </Stack>
+                    </LocalizationProvider>
+                  </div>
+                </div>
+              </div>
+              {/* Show loading indicator */}
+              <table
+                className="table table-bordered table-striped table-dark table-hover"
+                style={{ whiteSpace: "nowrap" }}
+              >
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>เวลารายการ</th>
+                    <th>ชื่อเว็บ</th>
+                    <th>หมายเหตุ</th>
+                    <th>จำนวนเงิน</th>
+                    <th width={400}>จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isLoading && (
+                    <tr>
+                      <td className="text-center" colSpan={6}>
+                        <div className="spinner-grow" role="status"></div>
+                      </td>
+                    </tr>
+                  )}
+
+                  {payments &&
+                    payments.map((payment, index) => (
+                      <tr key={payment.id}>
+                        <td>{index + 1}</td>
+                        <td>{formatTime(payment.time)}</td>
+                        <td>{payment.domain}</td>
+                        <td>{payment.remarks}</td>
+                        <td>{payment.amount}</td>
+                        <td>
+                          <button
+                            className="btn  btn-outline-light mx-1"
+                            onClick={(e) =>
+                              openModal(payment.id, payment.domain)
+                            }
+                          >
+                            แก้ไขเวลารายการ
+                          </button>
+                          <button
+                            className="btn  btn-outline-light mx-1"
+                            onClick={(e) =>
+                              openModal2(payment.id, payment.domain)
+                            }
+                          >
+                            แก้ไขจำนวนเงิน
+                          </button>
+                          <button
+                            className="btn  btn-outline-light mx-1"
+                            onClick={(e) =>
+                              openModal3(payment.id, payment.domain)
+                            }
+                          >
+                            แก้ไขหมายเหตุ
+                          </button>
+                          <button
+                            className="btn  btn-outline-light mx-1"
+                            onClick={(e) =>
+                              openModal4(payment.id, payment.domain)
+                            }
+                          >
+                            แก้ไขชื่อเว็บ
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  <tr>
+                    <td>Total : {paymentsPage.total}</td>
+                    <td colSpan={5}></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div className="row">
+                <div className="col text-start">
+                  <div
+                    className="form-group align-items-center my-1"
+                    style={{ width: "fit-content" }}
+                  >
+                    <label className="mx-2" htmlFor="pageSize">
+                      Page Size :
+                    </label>
+                    <select
+                      id="pageSize"
+                      className="form-control"
+                      style={{ cursor: "pointer" }}
+                      value={params.pageSize}
+                      onChange={(e) =>
+                        handleFilterChange("pageSize", e.target.value)
+                      }
+                    >
+                      <option value="30">30</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                      <option value="200">200</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col align-self-center">
+                  <div className="form-group my-1 text-end ">
+                    <label className="mx-2" htmlFor="pageNavi">
+                      Page :{" "}
+                    </label>
+                    <div
+                      className="btn-group"
+                      role="group"
+                      aria-label="Page navigation"
+                    >
+                      {/* สร้างปุ่มกดแต่ละหมายเลขหน้า */}
+                      <Stack spacing={2}>
+                        <Pagination
+                          page={params.page}
+                          defaultPage={paymentsPage.page}
+                          variant="outlined"
+                          onChange={(e) =>
+                            handleFilterChange("page", e.target.value)
+                          }
+                          count={Math.ceil(
+                            paymentsPage.total / paymentsPage.pageSize
+                          )}
+                          renderItem={(item) => (
+                            <PaginationItem
+                              slots={{
+                                previous: ArrowBackIcon,
+                                next: ArrowForwardIcon,
+                              }}
+                              {...item}
+                            />
+                          )}
+                          style={{ filter: "invert(1)" }}
+                        />
+                      </Stack>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -562,7 +682,7 @@ const Payments = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal0()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >
@@ -592,6 +712,7 @@ const Payments = () => {
                           "minutes",
                           "seconds",
                         ]}
+                        className="bg-white rounded"
                       />
                     </Stack>
                   </LocalizationProvider>
@@ -667,7 +788,6 @@ const Payments = () => {
           </div>
         </div>
       </div>
-
       <div
         className={`modal fade${show ? " show" : ""}`}
         style={{
@@ -693,7 +813,7 @@ const Payments = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >
@@ -723,6 +843,7 @@ const Payments = () => {
                           "minutes",
                           "seconds",
                         ]}
+                        className="bg-white rounded"
                       />
                     </Stack>
                   </LocalizationProvider>
@@ -736,7 +857,6 @@ const Payments = () => {
           </div>
         </div>
       </div>
-
       <div
         className={`modal fade${show2 ? " show" : ""}`}
         style={{
@@ -762,7 +882,7 @@ const Payments = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal2()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >
@@ -795,7 +915,6 @@ const Payments = () => {
           </div>
         </div>
       </div>
-
       <div
         className={`modal fade${show3 ? " show" : ""}`}
         style={{
@@ -821,7 +940,7 @@ const Payments = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal3()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >
@@ -853,7 +972,6 @@ const Payments = () => {
           </div>
         </div>
       </div>
-
       <div
         className={`modal fade${show4 ? " show" : ""}`}
         style={{
@@ -879,7 +997,7 @@ const Payments = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal4()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >

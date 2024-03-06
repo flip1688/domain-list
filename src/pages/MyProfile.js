@@ -1,12 +1,11 @@
 import Header from "./Header";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import {ChangeOwnName , ChangeOwnPass} from "../features/api/userAPI";
+import { ChangeOwnName, ChangeOwnPass } from "../features/api/userAPI";
+import Sidebar from "./Sidebar";
 
 const MyProfile = () => {
-  const { userAuth, userInfo } = useSelector(
-    (state) => state.auth
-  );
+  const { userAuth, userInfo } = useSelector((state) => state.auth);
 
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
@@ -51,10 +50,10 @@ const MyProfile = () => {
     e.preventDefault();
 
     try {
-      const response = await ChangeOwnName(formData2.name,userAuth);
+      const response = await ChangeOwnName(formData2.name, userAuth);
       if (response.status === 200) {
-        setUsers(response.data)
-        closeModal2()
+        setUsers(response.data);
+        closeModal2();
       } else {
         alert("Fail to Change");
       }
@@ -81,78 +80,93 @@ const MyProfile = () => {
     }
   }, [showModal, showModal2]);
 
-  
-
   return (
     <>
-      <Header />
-      <div className="container overflow-auto" style={{ textAlign: "-webkit-center" }}>
-        {user && (
-          <div className="card mt-2" style={{ width: "1024px" }}>
-            <div className="card-header bg-secondary">
-              <strong className="text-white">My Profile</strong>
-            </div>
-            <div className="card-body p-0 overflow-auto">
-              <table className="table table-striped my-0" style={{whiteSpace:"nowrap"}}>
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>ID</td>
-                    <td>{user.id}</td>
-                  </tr>
-                  <tr>
-                    <td>Username</td>
-                    <td>{user.username}</td>
-                  </tr>
-                  <tr>
-                    <td>name</td>
-                    <td>
-                      <div className="border rounded p-2 bg-white mb-2">
-                        <strong>{user.name}</strong>
-                      </div>
-                      <button
-                        className="btn btn-primary w-100"
-                        id="basic-url"
-                        onClick={openModal2}
-                      >
-                        Change Own Name
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>role</td>
-                    <td>{user.role}</td>
-                  </tr>
-                  <tr>
-                    <td>status</td>
-                    <td>{user.status}</td>
-                  </tr>
-                  <tr>
-                    <td>createdBy</td>
-                    <td>{user.createdBy}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="card-footer d-block">
-              <div className="my-2" htmlFor="basic-url">
-                <strong>Your Password</strong>
-              </div>
-              <button
-                className="btn btn-primary w-100"
-                id="basic-url"
-                onClick={openModal}
-              >
-                Change Password
-              </button>
+      <div className="container-fluid">
+        <div className="row bg-body-tertiary">
+          <Header />
+        </div>
+        <div className="row">
+          <div className="d-none d-lg-block col-lg-2 bg-body-tertiary">
+            <Sidebar />
+          </div>
+          <div className="col-12 col-lg-10">
+            <div
+              className="container overflow-auto"
+              style={{ textAlign: "-webkit-center" }}
+            >
+              {user && (
+                <div className="card mt-2" style={{ width: "600px" }}>
+                  <div className="card-header bg-secondary">
+                    <strong className="text-white">บัญชีของฉัน</strong>
+                  </div>
+                  <div className="card-body p-0 overflow-auto">
+                    <table
+                      className="table table-striped my-0"
+                      style={{ whiteSpace: "nowrap" }}
+                    >
+                      <thead>
+                        <tr>
+                          <th>ประเภท</th>
+                          <th>การตั้งค่า</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>ID</td>
+                          <td>{user.id}</td>
+                        </tr>
+                        <tr>
+                          <td>Username</td>
+                          <td>{user.username}</td>
+                        </tr>
+                        <tr>
+                          <td>name</td>
+                          <td>
+                            <div className="border rounded p-2 mb-2">
+                              <strong>{user.name}</strong>
+                            </div>
+                            <button
+                              className="btn btn-outline-light w-100"
+                              id="basic-url"
+                              onClick={openModal2}
+                            >
+                              Change Own Name
+                            </button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>role</td>
+                          <td>{user.role}</td>
+                        </tr>
+                        <tr>
+                          <td>status</td>
+                          <td>{user.status}</td>
+                        </tr>
+                        <tr>
+                          <td>createdBy</td>
+                          <td>{user.createdBy}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="card-footer d-block">
+                    <div className="my-2" htmlFor="basic-url">
+                      <strong>Your Password</strong>
+                    </div>
+                    <button
+                      className="btn btn-outline-light w-100"
+                      id="basic-url"
+                      onClick={openModal}
+                    >
+                      Change Password
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       <div
@@ -179,7 +193,7 @@ const MyProfile = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >
@@ -249,7 +263,7 @@ const MyProfile = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal2()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >

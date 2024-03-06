@@ -19,6 +19,7 @@ import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import Sidebar from "./Sidebar";
 
 const Domains = () => {
   const { userAuth } = useSelector((state) => state.auth);
@@ -323,164 +324,193 @@ const Domains = () => {
     }
   }, [showModal0, showModal, showModal2, showModal3, showModal4]);
 
+  console.log(domainsPage)
   return (
     <>
-      <Header />
-      <div
-        className="container overflow-auto"
-        style={{ textAlign: "-webkit-center" }}
-      >
-        <div className="row">
-          <div className="col-3">
-            <div className="form-group my-1 text-start">
-              <label htmlFor="name">ชื่อเว็บ</label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                placeholder="Enter Domain Name"
-                value={params.name}
-                onChange={(e) => handleFilterChange("name", e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="col-3">
-            <div className="form-group my-1 text-start">
-              <label htmlFor="status">สถานะ</label>
-              <select
-                id="status"
-                className="form-control"
-                style={{ cursor: "pointer" }}
-                value={params.status}
-                onChange={(e) => handleFilterChange("status", e.target.value)}
-              >
-                <option value="all">All</option>
-                <option value="active">Active</option>
-                <option value="blocked">Blocked</option>
-              </select>
-            </div>
-          </div>
-          <div className="col text-end align-self-center">
-            <button
-              className="btn btn-sm btn-dark my-2"
-              onClick={(e) => openModal0()}
-            >
-              + สร้างรายการเว็บใหม่
-            </button>
-          </div>
+      <div className="container-fluid">
+        <div className="row bg-body-tertiary">
+          <Header />
         </div>
-        {/* Show loading indicator */}
-        <table
-          className="table table-bordered table-striped"
-          style={{ whiteSpace: "nowrap" }}
-        >
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>ชื่อเว็บ</th>
-              <th>หมายเหตุ</th>
-              <th>จำนวนเงิน</th>
-              <th>สถานะ</th>
-              <th width={400}>จัดการ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading && (
-              <tr>
-                <td className="text-center" colSpan={6}>
-                  <div className="spinner-grow" role="status"></div>
-                </td>
-              </tr>
-            )}
-
-            {domains &&
-              domains.map((domain, index) => (
-                <tr key={domain.id}>
-                  <td>{index + 1}</td>
-                  <td>{domain.name}</td>
-                  <td>{domain.remarks}</td>
-                  <td>{domain.amount}</td>
-                  <td>{domain.status}</td>
-                  <td>
-                    <button
-                      className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal(domain.id, domain.name)}
-                    >
-                      แก้ไขชื่อเว็บ
-                    </button>
-                    <button
-                      className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal2(domain.id, domain.name)}
-                    >
-                      แก้ไขจำนวนเงิน
-                    </button>
-                    <button
-                      className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal3(domain.id, domain.name)}
-                    >
-                      Edit Remarks
-                    </button>
-                    <button
-                      className="btn btn-sm btn-dark mx-1"
-                      onClick={(e) => openModal4(domain.id, domain.name)}
-                    >
-                      แก้ไขสถานะ
-                    </button>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
         <div className="row">
-          <div className="col text-start">
-            <div
-              className="form-group align-items-center my-1"
-              style={{ width: "fit-content" }}
-            >
-              <label className="mx-2" htmlFor="pageSize">
-                Page Size :
-              </label>
-              <select
-                id="pageSize"
-                className="form-control"
-                style={{ cursor: "pointer" }}
-                value={params.pageSize}
-                onChange={(e) => handleFilterChange("pageSize", e.target.value)}
-              >
-                <option value="30">30</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-              </select>
-            </div>
+          <div className="d-none d-lg-block col-lg-2 bg-body-tertiary">
+            <Sidebar />
           </div>
-          <div className="col align-self-center">
-            <div className="form-group my-1 text-end ">
-              <label className="mx-2" htmlFor="pageNavi">
-                Page :{" "}
-              </label>
-              <div
-                className="btn-group"
-                role="group"
-                aria-label="Page navigation"
+          <div className="col-12 col-lg-10">
+            <div
+              className="container overflow-auto"
+              style={{ textAlign: "-webkit-center" }}
+            >
+              <div className="row">
+                <div className="col-3">
+                  <div className="form-group my-1 text-start">
+                    <label htmlFor="name">ชื่อเว็บ</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="name"
+                      placeholder="Enter Domain Name"
+                      value={params.name}
+                      onChange={(e) =>
+                        handleFilterChange("name", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="col-3">
+                  <div className="form-group my-1 text-start">
+                    <label htmlFor="status">สถานะ</label>
+                    <select
+                      id="status"
+                      className="form-control"
+                      style={{ cursor: "pointer" }}
+                      value={params.status}
+                      onChange={(e) =>
+                        handleFilterChange("status", e.target.value)
+                      }
+                    >
+                      <option value="all">All</option>
+                      <option value="active">Active</option>
+                      <option value="blocked">Blocked</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col text-end align-self-center">
+                  <button
+                    className="btn  btn-outline-light my-2"
+                    onClick={(e) => openModal0()}
+                  >
+                    + สร้างรายการเว็บใหม่
+                  </button>
+                </div>
+              </div>
+              {/* Show loading indicator */}
+              <table
+                className="table table-bordered table-striped table-dark table-hover"
+                style={{ whiteSpace: "nowrap" }}
               >
-                {/* สร้างปุ่มกดแต่ละหมายเลขหน้า */}
-                <Stack spacing={2}>
-                  <Pagination
-                    page={params.page}
-                    onChange={(e) => handleFilterChange("page", e.target.value)}
-                    count={Math.ceil(domainsPage.total / domainsPage.pageSize)}
-                    renderItem={(item) => (
-                      <PaginationItem
-                        slots={{
-                          previous: ArrowBackIcon,
-                          next: ArrowForwardIcon,
-                        }}
-                        {...item}
-                      />
-                    )}
-                  />
-                </Stack>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>ชื่อเว็บ</th>
+                    <th>หมายเหตุ</th>
+                    <th>จำนวนเงิน</th>
+                    <th>สถานะ</th>
+                    <th width={400}>จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isLoading && (
+                    <tr>
+                      <td className="text-center" colSpan={6}>
+                        <div className="spinner-grow" role="status"></div>
+                      </td>
+                    </tr>
+                  )}
+
+                  {domains &&
+                    domains.map((domain, index) => (
+                      <tr key={domain.id}>
+                        <td>{index + 1}</td>
+                        <td>{domain.name}</td>
+                        <td>{domain.remarks}</td>
+                        <td>{domain.amount}</td>
+                        <td>{domain.status}</td>
+                        <td>
+                          <button
+                            className="btn  btn-outline-light mx-1"
+                            onClick={(e) => openModal(domain.id, domain.name)}
+                          >
+                            แก้ไขชื่อเว็บ
+                          </button>
+                          <button
+                            className="btn  btn-outline-light mx-1"
+                            onClick={(e) => openModal2(domain.id, domain.name)}
+                          >
+                            แก้ไขจำนวนเงิน
+                          </button>
+                          <button
+                            className="btn  btn-outline-light mx-1"
+                            onClick={(e) => openModal3(domain.id, domain.name)}
+                          >
+                            แก้ไขหมายเหตุ
+                          </button>
+                          <button
+                            className="btn  btn-outline-light mx-1"
+                            onClick={(e) => openModal4(domain.id, domain.name)}
+                          >
+                            แก้ไขสถานะ
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    <tr>
+                      <td>Total : {domainsPage.total}</td>
+                      <td colSpan={5}></td>
+                    </tr>
+                </tbody>
+              </table>
+              <div className="row">
+                <div className="col text-start">
+                  <div
+                    className="form-group align-items-center my-1"
+                    style={{ width: "fit-content" }}
+                  >
+                    <label className="mx-2" htmlFor="pageSize">
+                      Page Size :
+                    </label>
+                    <select
+                      id="pageSize"
+                      className="form-control"
+                      style={{ cursor: "pointer" }}
+                      value={params.pageSize}
+                      onChange={(e) =>
+                        handleFilterChange("pageSize", e.target.value)
+                      }
+                    >
+                      <option value="30">30</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                      <option value="200">200</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col align-self-center">
+                  <div className="form-group my-1 text-end ">
+                    <label className="mx-2" htmlFor="pageNavi">
+                      Page :{" "}
+                    </label>
+                    <div
+                      className="btn-group"
+                      role="group"
+                      aria-label="Page navigation"
+                    >
+                      {/* สร้างปุ่มกดแต่ละหมายเลขหน้า */}
+                      <Stack spacing={2}>
+                        <Pagination
+                          page={params.page}
+                          defaultPage={domainsPage.page}
+                          variant="outlined"
+                          onChange={(e) =>
+                            handleFilterChange("page", e.target.value)
+                          }
+                          count={Math.ceil(
+                            domainsPage.total / domainsPage.pageSize
+                          )}
+                          renderItem={(item) => (
+                            <PaginationItem
+                              slots={{
+                                previous: ArrowBackIcon,
+                                next: ArrowForwardIcon,
+                              }}
+                              {...item}
+                            />
+                          )}
+                          style={{ filter: "invert(1)" }}
+                        />
+                      </Stack>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -512,7 +542,7 @@ const Domains = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal0()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >
@@ -599,7 +629,7 @@ const Domains = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >
@@ -656,7 +686,7 @@ const Domains = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal2()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >
@@ -714,7 +744,7 @@ const Domains = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal3()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >
@@ -771,7 +801,7 @@ const Domains = () => {
               </h5>
               <button
                 type="button"
-                className="btn btn-sm"
+                className="btn "
                 aria-label="Close"
                 onClick={() => closeModal4()} // เมื่อคลิกปุ่มปิดใน modal ให้ปิด modal
               >

@@ -1,4 +1,4 @@
-import "bulma/css/bulma.min.css";
+// import "bulma/css/bulma.min.css";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
