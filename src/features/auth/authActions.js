@@ -42,7 +42,7 @@ userLogin.rejected = 'auth/login/rejected';
 
 const userRefreshToken = createAsyncThunk(
   'auth/refresh',
-  async ({accessToken, refreshToken}) => {
+  async ({accessToken, refreshToken}, {rejectWithValue}) => {
     try {
       // configure header's Content-Type as JSON
       const config = {
@@ -58,7 +58,11 @@ const userRefreshToken = createAsyncThunk(
       console.log("refresh:",response)
       return response.data;
     } catch (error) {
-      // return error;
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message)
+      } else {
+        return rejectWithValue(error.message)
+      }
     }
   }
 );

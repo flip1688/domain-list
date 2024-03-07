@@ -2,23 +2,56 @@ import React, { useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { userRefreshToken } from "../features/auth/authActions";
 import { useDispatch, useSelector } from "react-redux";
+import { useGetMeQuery } from "../app/service/user";
+import { tokenExpire } from "../features/auth/authSlice";
 
 const Header = () => {
   const location = useLocation();
-  const { loading, userAuth, userInfo, error, success } = useSelector(
+  const { loading, userAuth, userInfo, error, success, authorized } = useSelector(
     (state) => state.auth
   );
   const dispatch = useDispatch();
   const username = userInfo ? userInfo.username : null;
   const navigate = useNavigate();
   const authRef = useRef(userAuth); 
+
+
+  const meResponse = useGetMeQuery({}, {
+    pollingInterval: 60000,
+  })
+  
+  const authorizedRef = useRef(authorized)
+  const meErrorRef = useRef(meResponse.error)
+
   useEffect(() => {
-    // if (userAuth) {
-    //   dispatch(userRefreshToken(userAuth));
-    // } else {
-    //   navigate("/");
-    // }
-  }, []);
+    console.log("me error:", meResponse.error);
+    console.log("current error:", meErrorRef.current);
+    if (meErrorRef.current === meResponse.error && meErrorRef.current !== undefined) {
+      console.log("current error:", meErrorRef.current);
+      if (authRef.current === userAuth && authRef.current != null && authorizedRef.current){
+        console.log("expired token");
+        dispatch(tokenExpire());
+      }
+    }
+  }, [meErrorRef]);
+
+  useEffect( () => {
+    console.log("current authorizedref:", authorizedRef.current);
+    console.log("current authorized:", authorized);
+    if (authorizedRef.current === authorized) {
+      
+      if (!authorizedRef.current) {
+        if (authRef.current === userAuth) {
+          console.log("userAuth:", authRef.current);
+          if (authRef.current !== null && !authorizedRef.current){
+           dispatch(userRefreshToken(authRef.current));
+          } else if (authRef.current == null) {
+            navigate("/login");
+          }
+        }
+      }
+    }
+  }, [authorizedRef]);
 
   return (
     <div>

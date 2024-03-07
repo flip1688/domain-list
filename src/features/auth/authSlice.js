@@ -10,6 +10,7 @@ const initialState = {
   success: false,
   error: null,
   loading: false,
+  authorized: false,
 }
 
 const authSlice = createSlice({
@@ -24,6 +25,10 @@ const authSlice = createSlice({
       state.userAuth = null;
       state.error = null;
       state.success = false;
+      state.authorized = true;
+    },
+    tokenExpire: (state) => {
+      state.authorized = false;
     },
   },
   extraReducers(builder) {
@@ -33,10 +38,11 @@ const authSlice = createSlice({
     });
 
     builder.addCase(userLogin.fulfilled , (state, { payload }) => {
-      state.loading = false
+      state.loading = false;
       // state.userInfo = payload
-      state.userAuth = payload.auth
-      state.userInfo = payload.user
+      state.userAuth = payload.auth;
+      state.userInfo = payload.user;
+      state.authorized = true;
       localStorage.setItem("auth", JSON.stringify(payload.auth))
     });
 
@@ -71,6 +77,6 @@ const authSlice = createSlice({
     });
   },
 })
-export const { logout } = authSlice.actions
+export const { logout, tokenExpire } = authSlice.actions
 
 export default  authSlice.reducer
