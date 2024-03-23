@@ -20,6 +20,7 @@ import PaginationItem from "@mui/material/PaginationItem";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Sidebar from "./Sidebar";
+import { useLocation } from "react-router-dom";
 
 const Domains = () => {
   const { userAuth } = useSelector((state) => state.auth);
@@ -34,13 +35,17 @@ const Domains = () => {
   const [domains, setDomain] = useState([]);
   const [domainsPage, setDomainPage] = useState([]);
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const nameParam = searchParams.get("name");
+
   const [params, setParams] = useState({
-    name: "",
+    name: nameParam || "",
     status: "all",
     page: 1,
     pageSize: 30,
   });
-
+  
   const handleFilterChange = (name, value) => {
     setParams((prevParams) => ({
       ...prevParams,
@@ -324,7 +329,7 @@ const Domains = () => {
     }
   }, [showModal0, showModal, showModal2, showModal3, showModal4]);
 
-  console.log(domainsPage)
+  console.log(domainsPage);
   return (
     <>
       <div className="container-fluid">
@@ -413,7 +418,9 @@ const Domains = () => {
                         <td>{index + 1}</td>
                         <td>{domain.name}</td>
                         <td>{domain.remarks}</td>
-                        <td className="text-end">{new Intl.NumberFormat().format(domain.amount)}</td>
+                        <td className="text-end">
+                          {new Intl.NumberFormat().format(domain.amount)}
+                        </td>
                         <td>{domain.status}</td>
                         <td>
                           <button
@@ -443,10 +450,10 @@ const Domains = () => {
                         </td>
                       </tr>
                     ))}
-                    <tr>
-                      <td>Total : {domainsPage.total}</td>
-                      <td colSpan={5}></td>
-                    </tr>
+                  <tr>
+                    <td>Total : {domainsPage.total}</td>
+                    <td colSpan={5}></td>
+                  </tr>
                 </tbody>
               </table>
               <div className="row">
