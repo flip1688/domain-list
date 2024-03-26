@@ -32,7 +32,7 @@ const Sidebar = () => {
           aria-current="page"
           to="/home"
         >
-          Dashboard
+          ค้นหา
         </Link>
       </li>
       <li className="nav-item col-6 col-lg-auto ">
@@ -59,6 +59,19 @@ const Sidebar = () => {
           to="/domain"
         >
           รายชื่อเว็บ
+        </Link>
+      </li>
+      <li className="nav-item col-6 col-lg-auto ">
+        <Link
+          className={`nav-link border rounded m-1 px-2 ${
+            location.pathname === "/blocked"
+              ? "bg-secondary text-white active"
+              : ""
+          }`}
+          aria-current="page"
+          to="/blocked"
+        >
+          รายการบล็อค
         </Link>
       </li>
       <li className="nav-item col-6 col-lg-auto ">

@@ -9,6 +9,7 @@ import Users from "./pages/Users";
 import Domains from "./pages/Domain";
 import Payments from "./pages/Payment";
 import Docs from "./pages/Docs";
+import Blocked from "./pages/Blocked";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/user" element={<Users />} />
           <Route path="/domain" element={<Domains />} />
+          <Route path="/blocked" element={<Blocked />} />
           <Route path="/payment" element={<Payments />} />
           <Route path="/me" element={<MyProfile />} />
           <Route path="/docs" element={<Docs />} />

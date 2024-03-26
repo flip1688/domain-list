@@ -22,7 +22,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Sidebar from "./Sidebar";
 import { useLocation } from "react-router-dom";
 
-const Domains = () => {
+const Blocked = () => {
   const { userAuth } = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal0, setShowModal0] = useState(false);
@@ -41,7 +41,7 @@ const Domains = () => {
 
   const [params, setParams] = useState({
     name: nameParam || "",
-    status: "all",
+    status: "blocked",
     page: 1,
     pageSize: 30,
   });
@@ -130,9 +130,9 @@ const Domains = () => {
     try {
       const response = await CreateNewDomain(
         formData0.name,
-        formData0.amount,
+        0,
         formData0.remarks,
-        'active',
+        'blocked',
         userAuth
       );
 
@@ -362,7 +362,7 @@ const Domains = () => {
                     />
                   </div>
                 </div>
-                <div className="col-3">
+                <div className="col-3 invisible">
                   <div className="form-group my-1 text-start">
                     <label htmlFor="status">สถานะ</label>
                     <select
@@ -385,7 +385,7 @@ const Domains = () => {
                     className="btn  btn-outline-light my-2"
                     onClick={(e) => openModal0()}
                   >
-                    + สร้างรายการเว็บใหม่
+                    + สร้างรายการบล็อคใหม่
                   </button>
                 </div>
               </div>
@@ -546,7 +546,7 @@ const Domains = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                สร้างรายการเว็บใหม่ : <strong className="h5"></strong>
+                สร้างรายการบล็อคใหม่ : <strong className="h5"></strong>
               </h5>
               <button
                 type="button"
@@ -574,20 +574,14 @@ const Domains = () => {
                   <small>ให้อยู่ในรูปแบบ ex: example.com</small>
                 </div>
 
-                <div className="form-group my-1">
-                  <label htmlFor="amount">จำนวนเงิน</label>
-                  <input
+                <input
                     type="number"
-                    className="form-control"
+                    className="invisible"
                     id="amount"
                     placeholder="Enter amount"
-                    value={formData0.amount}
+                    value="0"
                     step="any"
-                    onChange={(e) =>
-                      setFormData0({ ...formData0, amount: e.target.value })
-                    }
                   />
-                </div>
 
                 <div className="form-group my-1">
                   <label htmlFor="remarks">หมายเหตุ</label>
@@ -848,4 +842,4 @@ const Domains = () => {
   );
 };
 
-export default Domains;
+export default Blocked;

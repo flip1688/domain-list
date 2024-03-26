@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const CreateNewDomain = async (name, amount, remarks, userAuth) => {
+export const CreateNewDomain = async (name, amount, remarks, status, userAuth) => {
   try {
     const config = {
       headers: {
@@ -14,6 +14,7 @@ export const CreateNewDomain = async (name, amount, remarks, userAuth) => {
       {
         name,
         amount,
+        status,
         remarks,
       },
       config
