@@ -228,7 +228,7 @@ const Header = () => {
                   aria-current="page"
                   to="/home"
                 >
-                  Dashboard
+                  ค้นหา
                 </Link>
               </li>
               <li className="nav-item col-6 col-lg-auto ">
@@ -260,6 +260,19 @@ const Header = () => {
               <li className="nav-item col-6 col-lg-auto ">
                 <Link
                   className={`nav-link border rounded m-1 px-2 ${
+                    location.pathname === "/blocked"
+                      ? "bg-secondary text-white active"
+                      : ""
+                  }`}
+                  aria-current="page"
+                  to="/blocked"
+                >
+                  รายการระงับ
+                </Link>
+              </li>
+              <li className="nav-item col-6 col-lg-auto ">
+                <Link
+                  className={`nav-link border rounded m-1 px-2 ${
                     location.pathname === "/payment"
                       ? "bg-secondary text-white active"
                       : ""
@@ -268,6 +281,19 @@ const Header = () => {
                   to="/payment"
                 >
                   การชำระเงิน
+                </Link>
+              </li>
+              <li className="nav-item col-6 col-lg-auto ">
+                <Link
+                  className={`nav-link border rounded m-1 px-2 ${
+                    location.pathname === "/docs"
+                      ? "bg-secondary text-white active"
+                      : ""
+                  }`}
+                  aria-current="page"
+                  to="/docs"
+                >
+                  คู่มือการใช้งาน
                 </Link>
               </li>
             </ul>

@@ -71,7 +71,7 @@ const Sidebar = () => {
           aria-current="page"
           to="/blocked"
         >
-          รายการบล็อค
+          รายการระงับ
         </Link>
       </li>
       <li className="nav-item col-6 col-lg-auto ">
